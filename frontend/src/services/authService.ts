@@ -1,0 +1,1 @@
+// Archivo que sirve para manejar la autenticación de usuarios en el frontend
