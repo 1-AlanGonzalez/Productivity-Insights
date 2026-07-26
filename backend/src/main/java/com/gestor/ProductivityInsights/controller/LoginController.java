@@ -6,5 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/login")
 public class LoginController {
+    private ILoginService loginService;
 
+   
+
+    // Add your login endpoint here
 }
