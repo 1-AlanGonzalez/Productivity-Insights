@@ -6,5 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/register")
 public class RegisterController {
+    private IRegisterService registerService;
 
+    // Add your registration endpoint here
 }
