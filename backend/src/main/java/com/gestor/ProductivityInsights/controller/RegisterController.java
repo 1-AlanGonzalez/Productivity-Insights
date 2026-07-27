@@ -14,7 +14,7 @@ import com.gestor.ProductivityInsights.service.IRegisterService;
 public class RegisterController {
     private IRegisterService registerService;
 
-    @PostMapping("/register")
+    @PostMapping
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO dto) {
 
         // Después llamarás al service
