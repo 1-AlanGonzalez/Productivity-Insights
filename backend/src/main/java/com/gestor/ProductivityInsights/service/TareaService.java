@@ -2,6 +2,10 @@ package com.gestor.ProductivityInsights.service;
 import com.gestor.ProductivityInsights.dto.TareaRequestDTO;
 import java.util.List;
 
+import java.util.List;
+
+import com.gestor.ProductivityInsights.dto.TareaRequestDTO;
+
 public class TareaService implements ITareaService {
     @Override
     public List<TareaRequestDTO> bringTask() {
