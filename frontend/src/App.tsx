@@ -1,9 +1,12 @@
+import { Route, Routes } from "react-router-dom"
+import Register from "./pages/RegisterPage";
+
+
 function App() {
   return (
-    <main>
-      <h1>Productivity Insights</h1>
-      <p>React y TypeScript están funcionando.</p>
-    </main>
+    <Routes>
+      <Route path="/register" element={<Register />} />
+    </Routes>
   )
 }
 
