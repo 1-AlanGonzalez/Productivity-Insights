@@ -5,10 +5,15 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity // Marca la clase como una entidad de JPA
 @Table(name = "usuario") // Especifica el nombre de la tabla en la base de datos
+@Getter // Genera automáticamente los métodos getter para todos los campos
+@Setter // Genera automáticamente los métodos setter para todos los campos
+@AllArgsConstructor // Genera automáticamente un constructor con todos los campos como parámetros
+@NoArgsConstructor // Genera automáticamente un constructor vacío
 public class Usuario {
     // Usuario representa un usuario del sistema,
 
@@ -26,8 +31,6 @@ public class Usuario {
     @Column(name = "CONTRASENA", nullable = false, length = 255) // Especifica el nombre de la columna y que no puede ser nulo
     private String contrasena; // Contraseña del usuario
 
-    // Constructor vacío requerido por JPA
-    public Usuario() {}
 
     // Constructor con parámetros para crear un usuario con nombre, correo y contraseña
     public Usuario(String nombre, String correo, String contrasena) {
@@ -36,30 +39,4 @@ public class Usuario {
         this.contrasena = contrasena;   
     }
 
-    // Getters 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public String getContrasena() {
-        return contrasena;
-    }
-    public Long getID() {
-        return id;
-    }
-
-    // Setters
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
-    }
 }

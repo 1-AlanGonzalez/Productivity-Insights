@@ -20,6 +20,10 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "tarea")
+@Getter // Genera automáticamente los métodos getter para todos los campos
+@Setter // Genera automáticamente los métodos setter para todos los campos
+@AllArgsConstructor // Genera automáticamente un constructor con todos los campos como parámetros
+@NoArgsConstructor // Genera automáticamente un constructor vacío
 public class Tarea {
     // Tarea representa una tarea en el sistema
 
@@ -62,9 +66,6 @@ public class Tarea {
     @JoinColumn(name = "ID_USUARIO", nullable = false)
     private Usuario usuario; // Identificador del usuario al que pertenece la tarea
 
-    // Constructor vacío requerido por JPA
-    public Tarea() {}
-
     // Constructor con parámetros para crear una tarea 
     public Tarea(String titulo, String descripcion, Prioridad prioridad, String categoria,
                   LocalDate fechaLimite, Usuario usuario) {
@@ -76,87 +77,4 @@ public class Tarea {
         this.usuario = usuario;
     }
 
-    // Getters
-    
-    public Long getId() {
-        return id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public Prioridad getPrioridad() {
-        return prioridad;
-    }
-
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public LocalDate getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public LocalDate getFechaLimite() {
-        return fechaLimite;
-    }
-
-    public LocalDate getFechaCompletada() {
-        return fechaCompletada;
-    }
-
-    public LocalTime getHoraCompletada() {
-        return horaCompletada;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    // Setters
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public void setPrioridad(Prioridad prioridad) {
-        this.prioridad = prioridad;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
-
-    public void setFechaCreacion(LocalDate fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public void setFechaLimite(LocalDate fechaLimite) {
-        this.fechaLimite = fechaLimite;
-    }
-
-    public void setFechaCompletada(LocalDate fechaCompletada) {
-        this.fechaCompletada = fechaCompletada;
-    }
-
-    public void setHoraCompletada(LocalTime horaCompletada) {
-        this.horaCompletada = horaCompletada;
-    }
 }
