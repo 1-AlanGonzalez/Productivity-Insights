@@ -3,13 +3,18 @@ package com.gestor.ProductivityInsights.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gestor.ProductivityInsights.dto.TareaRequestDTO;
 import com.gestor.ProductivityInsights.service.ITareaService;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -19,19 +24,19 @@ public class TareaController {
     private ITareaService tareaService;
 
     @GetMapping()
-    public ResponseEntity<List<TareaDTO>> bingTask(){
+    public ResponseEntity<List<TareaRequestDTO>> bingTask(){
         return ResponseEntity.ok(tareaService.bringTask());
     }
 
     @PostMapping
-    public ResponseEntity<TareaDTO> createdTask (@RequestBody TareaDTO tareaDTO){
-        TareaDTO createdTask = tareaService.createdTaske(tareaDTO);
+    public ResponseEntity<TareaRequestDTO> createdTask (@RequestBody TareaRequestDTO tareaDTO){
+        TareaRequestDTO createdTask = tareaService.createdTaske(tareaDTO);
         return ResponseEntity.created(URI.create("/api/tarea" + createdTask.getId())).body(createdTask);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TareaDTO> updateTask(@PathVariable Long id, @RequestBody TareaDTO tareaDTO){
-        TareaDTO updatedTask = tareaService.updateTask(id, tareaDTO);
+    public ResponseEntity<TareaRequestDTO> updateTask(@PathVariable Long id, @RequestBody TareaRequestDTO tareaDTO){
+        TareaRequestDTO updatedTask = tareaService.updateTask(id, tareaDTO);
         return ResponseEntity.ok(updatedTask);
     }
 
