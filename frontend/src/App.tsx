@@ -1,10 +1,7 @@
-function App() {
-  return (
-    <main>
-      <h1>Productivity Insights</h1>
-      <p>React y TypeScript están funcionando.</p>
-    </main>
-  )
-}
+import LoginPage from './pages/LoginPage'
 
-export default App
+  function App() {
+    return <LoginPage />
+  }
+
+  export default App
