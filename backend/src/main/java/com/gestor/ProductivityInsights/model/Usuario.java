@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity // Marca la clase como una entidad de JPA
 @Table(name = "usuario") // Especifica el nombre de la tabla en la base de datos

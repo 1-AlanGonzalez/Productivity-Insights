@@ -18,6 +18,11 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "tarea")
 @Getter // Genera automáticamente los métodos getter para todos los campos

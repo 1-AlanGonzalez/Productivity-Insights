@@ -1,4 +1,6 @@
 package com.gestor.ProductivityInsights.service;
+import com.gestor.ProductivityInsights.dto.TareaRequestDTO;
+import java.util.List;
 
 public class TareaService implements ITareaService {
     @Override
