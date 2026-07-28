@@ -6,12 +6,15 @@ function RegisterPage() {
     const [password, setPassword] = useState("");
 
     const register = async () => {
-        const response = await fetch("/api/register/register", {
+        const response = await fetch("http://localhost:8080/api/authRegister/register", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ username, email, password })
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            username,
+            email,
+            password })
         });
         const mensaje = await response.text();
         console.log(mensaje);

@@ -1,10 +1,25 @@
 package com.gestor.ProductivityInsights.service;
+import com.gestor.ProductivityInsights.model.Usuario;
+import com.gestor.ProductivityInsights.repository.UsuarioRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RegisterService implements IRegisterService {
+    
+    
+    private UsuarioRepository usuarioRepository;
+
+    public RegisterService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
+    
     @Override
-    public void register(String username, String password) {
-        // Implement the registration logic here
-        // For example, you can save the user details to a database
+    public void register(String username, String password, String email) {
+        Usuario usuario = new Usuario();
+        usuario.setNombre(username);
+        usuario.setContrasena(password);
+        usuario.setCorreo(email);
+        usuarioRepository.save(usuario);
         System.out.println("User registered with username: " + username);
     }
 

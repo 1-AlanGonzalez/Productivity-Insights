@@ -8,17 +8,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gestor.ProductivityInsights.dto.RegisterRequestDTO;
 import com.gestor.ProductivityInsights.service.IRegisterService;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 @RestController
-@RequestMapping("/api/register")
+@RequestMapping("/api/authRegister")
+@CrossOrigin(origins = "http://localhost:5173")
 public class RegisterController {
     private IRegisterService registerService;
 
-    @PostMapping
+    public RegisterController(IRegisterService registerService) {
+        this.registerService = registerService;
+    }
+
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO dto) {
-
-        // Después llamarás al service
-
+        registerService.register(dto.getUsername(), dto.getPassword(), dto.getEmail());
         return ResponseEntity.ok("Usuario registrado correctamente");
     }
 }
