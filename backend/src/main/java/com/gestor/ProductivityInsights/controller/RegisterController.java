@@ -21,7 +21,13 @@ public class RegisterController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO dto) {
-        registerService.register(dto.getUsername(), dto.getPassword(), dto.getEmail());
-        return ResponseEntity.ok("Usuario registrado correctamente");
+        try {
+            registerService.register(dto.getUsername(), dto.getPassword(), dto.getEmail());
+            return ResponseEntity.ok("Usuario registrado correctamente"); // OK es el código de estado HTTP 200
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage()); // bad request es el código de estado HTTP 400, body contiene el mensaje de error 
+        }
+    
     }
+
 }
