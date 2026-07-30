@@ -16,8 +16,20 @@ function RegisterPage() {
             email,
             password })
         });
-        const mensaje = await response.text();
-        console.log(mensaje);
+        
+        const  mensaje = await response.text();
+
+        if(response.ok) { 
+            // el response.ok es la respuesta del backend, si es true significa que el usuario se registro correctamente, si es false significa que hubo un error al registrar el usuario
+            // true el servidor manda 2xx
+            // false el servidor manda 4xx o 5xx
+            console.log("User registered successfully");
+            console.log(mensaje);
+        }
+        else{
+            console.log("Error registering user");
+            console.log(mensaje);
+        }
     }
     return (
         <div>
