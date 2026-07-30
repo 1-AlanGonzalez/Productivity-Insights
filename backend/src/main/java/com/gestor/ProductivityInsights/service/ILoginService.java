@@ -1,5 +1,6 @@
 package com.gestor.ProductivityInsights.service;
+import com.gestor.ProductivityInsights.dto.LoginRequestDTO;
 
 public interface ILoginService {
-    void login(String username, String password);
+    boolean login(LoginRequestDTO dto);
 }

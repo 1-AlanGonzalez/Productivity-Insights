@@ -15,8 +15,8 @@ async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     setCargando(true)
 
     try {
-        const usuario = await login(correo, contrasena)
-        console.log('Usuario autenticado:', usuario)
+        await login(correo, contrasena)
+        console.log('Inicio de sesión exitoso')
     } catch {
         setError('Correo o contraseña incorrectos')
     } finally {
