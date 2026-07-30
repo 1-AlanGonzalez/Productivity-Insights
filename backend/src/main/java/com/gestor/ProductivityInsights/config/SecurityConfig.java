@@ -2,12 +2,12 @@ package com.gestor.ProductivityInsights.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
-
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 
@@ -20,19 +20,31 @@ public class SecurityConfig {
     }
 
     @Bean
-    //  Este objeto tendrá la responsabilidad de guardar el contexto de seguridad dentro de la sesión HTTP
     public SecurityContextRepository securityContextRepository() {
         return new HttpSessionSecurityContextRepository();
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
         http
+            .cors(Customizer.withDefaults())
+
+            // Excepción temporal hasta implementar tokens CSRF en React
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/login")
+                .ignoringRequestMatchers(
+                    "/api/login",
+                    "/api/authRegister/register"
+                )
             )
+
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST, "/api/login").permitAll()
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/login",
+                    "/api/authRegister/register"
+                ).permitAll()
                 .anyRequest().authenticated()
             );
 

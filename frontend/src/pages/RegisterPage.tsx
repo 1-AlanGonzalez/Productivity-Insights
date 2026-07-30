@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 function RegisterPage() {
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const [nombre, setNombre] = useState("");
+    const [correo, setCorreo] = useState("");
+    const [contrasena, setContrasena] = useState("");
 
     const register = async () => {
         const response = await fetch("http://localhost:8080/api/authRegister/register", {
@@ -12,9 +12,9 @@ function RegisterPage() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            username,
-            email,
-            password })
+            nombre,
+            correo,
+            contrasena })
         });
         
         const  mensaje = await response.text();
@@ -34,26 +34,26 @@ function RegisterPage() {
     return (
         <div>
             <h1>Register</h1>
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="nombre">Username:</label>
             <input
                 type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Nombre"
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
             />
-            <label htmlFor="email">Email:</label>
+            <label htmlFor="correo">Email:</label>
             <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="creo"
+                placeholder="Correo"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
             />
-            <label htmlFor="password">Password:</label>
+            <label htmlFor="contrasena">Password:</label>
             <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="contrasena"
+                placeholder="Contrasena"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
             />
             <button onClick={register}>
                 Register

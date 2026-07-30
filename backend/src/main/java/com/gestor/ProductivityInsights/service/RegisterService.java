@@ -3,30 +3,33 @@ import com.gestor.ProductivityInsights.exception.BusinessException;
 import com.gestor.ProductivityInsights.model.Usuario;
 import com.gestor.ProductivityInsights.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class RegisterService implements IRegisterService {
     
     
     private UsuarioRepository usuarioRepository;
+    private PasswordEncoder passwordEncoder;
 
-    public RegisterService(UsuarioRepository usuarioRepository) {
+    public RegisterService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
     
     @Override
-    public void register(String username, String password, String email) {
+    public void register(String username, String password, String correo) {
         if(username.isBlank()){
             throw new BusinessException("Username is required");
         }
-        if(email.isBlank()){
+        if(correo.isBlank()){
             throw new BusinessException("Email is required");
         }
 
-        if(usuarioRepository.existsByUsername(username)){
+        if(usuarioRepository.existsByNombre(username)){
             throw new BusinessException("Username already exists");
         }
-        if(usuarioRepository.existsByEmail(email)){
+        if(usuarioRepository.existsByCorreo(correo)){
             throw new BusinessException("Email already exists");
         }
         if(password.length() < 8){
@@ -34,8 +37,8 @@ public class RegisterService implements IRegisterService {
         }
         Usuario usuario = new Usuario();
         usuario.setNombre(username);
-        usuario.setContrasena(password);
-        usuario.setCorreo(email);
+        usuario.setContrasena(passwordEncoder.encode(password));
+        usuario.setCorreo(correo);
         usuarioRepository.save(usuario);
         System.out.println("User registered with username: " + username);
     }
