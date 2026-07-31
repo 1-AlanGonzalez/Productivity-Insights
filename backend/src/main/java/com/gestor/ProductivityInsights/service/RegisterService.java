@@ -1,4 +1,5 @@
 package com.gestor.ProductivityInsights.service;
+import com.gestor.ProductivityInsights.dto.RegisterRequestDTO;
 import com.gestor.ProductivityInsights.exception.BusinessException;
 import com.gestor.ProductivityInsights.model.Usuario;
 import com.gestor.ProductivityInsights.repository.UsuarioRepository;
@@ -18,29 +19,29 @@ public class RegisterService implements IRegisterService {
     }
     
     @Override
-    public void register(String username, String password, String correo) {
-        if(username.isBlank()){
+    public void register(RegisterRequestDTO registerRequestDTO) {
+        if(registerRequestDTO.getNombre().isBlank()){
             throw new BusinessException("Username is required");
         }
-        if(correo.isBlank()){
+        if(registerRequestDTO.getCorreo().isBlank()){
             throw new BusinessException("Email is required");
         }
 
-        if(usuarioRepository.existsByNombre(username)){
+        if(usuarioRepository.existsByNombre(registerRequestDTO.getNombre())){
             throw new BusinessException("Username already exists");
         }
-        if(usuarioRepository.existsByCorreo(correo)){
+        if(usuarioRepository.existsByCorreo(registerRequestDTO.getCorreo())){
             throw new BusinessException("Email already exists");
         }
-        if(password.length() < 8){
+        if(registerRequestDTO.getContrasena().length() < 8){
             throw new BusinessException("Password must be at least 8 characters long");
         }
         Usuario usuario = new Usuario();
-        usuario.setNombre(username);
-        usuario.setContrasena(passwordEncoder.encode(password));
-        usuario.setCorreo(correo);
+        usuario.setNombre(registerRequestDTO.getNombre());
+        usuario.setContrasena(passwordEncoder.encode(registerRequestDTO.getContrasena()));
+        usuario.setCorreo(registerRequestDTO.getCorreo());
         usuarioRepository.save(usuario);
-        System.out.println("User registered with username: " + username);
+        System.out.println("User registered with username: " + registerRequestDTO.getNombre());
     }
 
 }
