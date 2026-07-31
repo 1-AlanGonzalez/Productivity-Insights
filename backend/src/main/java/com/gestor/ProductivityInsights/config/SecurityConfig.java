@@ -35,7 +35,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers(
                     "/api/login",
-                    "/api/authRegister/register"
+                    "/api/authRegister/register",
+                    "/api/tarea"
                 )
             )
 
@@ -43,7 +44,8 @@ public class SecurityConfig {
                 .requestMatchers(
                     HttpMethod.POST,
                     "/api/login",
-                    "/api/authRegister/register"
+                    "/api/authRegister/register",
+                    "/api/tarea"
                 ).permitAll()
                 .anyRequest().authenticated()
             );
