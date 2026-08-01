@@ -1,4 +1,5 @@
 package com.gestor.ProductivityInsights.service;
+import com.gestor.ProductivityInsights.dto.RegisterRequestDTO;
 import com.gestor.ProductivityInsights.exception.BusinessException;
 import com.gestor.ProductivityInsights.model.Usuario;
 import com.gestor.ProductivityInsights.repository.UsuarioRepository;
@@ -18,31 +19,47 @@ public class RegisterService implements IRegisterService {
     }
     
     @Override
-    public void register(String username, String password, String correo) {
-        if(username == null || username.isBlank()){
+    public void register(RegisterRequestDTO registerRequestDTO) {
+        if (dto == null) {
+          throw new BusinessException("Los datos son obligatorios");
+        }
+
+        String username = dto.getNombre();
+        String correo = dto.getCorreo();
+        String password = dto.getContrasena();
+
+        if (username == null || username.isBlank()) {
             throw new BusinessException("Username is required");
         }
-        if(correo == null || correo.isBlank()){
+
+        if (correo == null || correo.isBlank()) {
             throw new BusinessException("Email is required");
         }
-        if (password == null || password.isBlank()){
+
+        if (password == null || password.isBlank()) {
             throw new BusinessException("Password is required");
         }
-        if(usuarioRepository.existsByNombre(username)){
+
+        if (password.length() < 8) {
+            throw new BusinessException(
+                    "Password must be at least 8 characters long"
+            );
+        }
+
+        if (usuarioRepository.existsByNombre(username)) {
             throw new BusinessException("Username already exists");
         }
-        if(usuarioRepository.existsByCorreo(correo)){
+
+        if (usuarioRepository.existsByCorreo(correo)) {
             throw new BusinessException("Email already exists");
         }
-        if(password.length() < 8){
-            throw new BusinessException("Password must be at least 8 characters long");
-        }
+
         Usuario usuario = new Usuario();
-        usuario.setNombre(username);
-        usuario.setContrasena(passwordEncoder.encode(password));
-        usuario.setCorreo(correo);
+        usuario.setNombre(registerRequestDTO.getNombre());
+        usuario.setContrasena(passwordEncoder.encode(registerRequestDTO.getContrasena()));
+        usuario.setCorreo(registerRequestDTO.getCorreo());
         usuarioRepository.save(usuario);
-        System.out.println("User registered with username: " + username);
+        System.out.println("User registered with username: " + registerRequestDTO.getNombre());
     }
 
 }

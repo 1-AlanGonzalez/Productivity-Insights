@@ -22,7 +22,7 @@ public class RegisterController {
    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterRequestDTO dto) {
 
-        registerService.register(dto.getNombre(), dto.getContrasena(), dto.getCorreo());
+        registerService.register(dto);
 
         return ResponseEntity.ok("Usuario registrado correctamente");
     }

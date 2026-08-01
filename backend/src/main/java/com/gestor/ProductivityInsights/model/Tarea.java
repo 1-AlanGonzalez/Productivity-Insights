@@ -20,6 +20,7 @@ import java.time.LocalTime;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -28,6 +29,7 @@ import lombok.NoArgsConstructor;
 @Setter // Genera automáticamente los métodos setter para todos los campos
 @AllArgsConstructor // Genera automáticamente un constructor con todos los campos como parámetros
 @NoArgsConstructor // Genera automáticamente un constructor vacío
+@Builder // Permite construir objetos de la clase Tarea utilizando el patrón Builder
 public class Tarea {
     // Tarea representa una tarea en el sistema
 
@@ -70,7 +72,7 @@ public class Tarea {
     @JoinColumn(name = "ID_USUARIO", nullable = false)
     private Usuario usuario; // Identificador del usuario al que pertenece la tarea
 
-    // Constructor con parámetros para crear una tarea 
+    //Constructor con parámetros para crear una tarea 
     public Tarea(String titulo, String descripcion, Prioridad prioridad, String categoria,
                   LocalDate fechaLimite, Usuario usuario) {
         this.titulo = titulo;
@@ -80,5 +82,7 @@ public class Tarea {
         this.fechaLimite = fechaLimite;
         this.usuario = usuario;
     }
+
+    
 
 }

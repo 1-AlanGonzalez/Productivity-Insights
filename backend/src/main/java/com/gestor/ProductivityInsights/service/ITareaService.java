@@ -3,8 +3,8 @@ import java.util.List;
 import com.gestor.ProductivityInsights.dto.TareaRequestDTO;
 
 public interface ITareaService {
-    List<TareaRequestDTO> bringTask();
-    TareaRequestDTO createdTaske(TareaRequestDTO tareaRequestDTO);
-    TareaRequestDTO updateTask(Long id, TareaRequestDTO tareaRequestDTO);
-    void deleteTask(Long id);
+    List<TareaRequestDTO> traerTareas();
+    TareaRequestDTO crearTarea(TareaRequestDTO tareaRequestDTO);
+    TareaRequestDTO actualizarTarea(Long id, TareaRequestDTO tareaRequestDTO);
+    void eliminarTarea(Long id);
 }
