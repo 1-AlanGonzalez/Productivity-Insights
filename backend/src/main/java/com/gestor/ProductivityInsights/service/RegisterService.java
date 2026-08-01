@@ -20,13 +20,13 @@ public class RegisterService implements IRegisterService {
     
     @Override
     public void register(RegisterRequestDTO registerRequestDTO) {
-        if (dto == null) {
+        if (registerRequestDTO == null) {
           throw new BusinessException("Los datos son obligatorios");
         }
 
-        String username = dto.getNombre();
-        String correo = dto.getCorreo();
-        String password = dto.getContrasena();
+        String username = registerRequestDTO.getNombre();
+        String correo = registerRequestDTO.getCorreo();
+        String password = registerRequestDTO.getContrasena();
 
         if (username == null || username.isBlank()) {
             throw new BusinessException("Username is required");
