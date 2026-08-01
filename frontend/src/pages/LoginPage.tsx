@@ -1,28 +1,31 @@
 // Pagina de login de la aplicacion
 
 import { FormEvent, useState } from 'react'
-import { login } from '../services/authService'
+import { useNavigate } from "react-router-dom"
+import { useAuth } from "../context/AuthContext"
 
 function LoginPage() {
-const [correo, setCorreo] = useState('')
-const [contrasena, setContrasena] = useState('')
-const [cargando, setCargando] = useState(false)
-const [error, setError] = useState('')
+    const navigate = useNavigate()
+    const { iniciarSesion } = useAuth()
+    const [correo, setCorreo] = useState('')
+    const [contrasena, setContrasena] = useState('')
+    const [cargando, setCargando] = useState(false)
+    const [error, setError] = useState('')
 
-async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setError('')
-    setCargando(true)
+    async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        setError('')
+        setCargando(true)
 
-    try {
-        await login(correo, contrasena)
-        console.log('Inicio de sesión exitoso')
-    } catch {
-        setError('Correo o contraseña incorrectos')
-    } finally {
-        setCargando(false)
+        try {
+            await iniciarSesion(correo, contrasena)
+            navigate("/dashboard", { replace: true })
+        } catch {
+            setError('Correo o contraseña incorrectos')
+        } finally {
+            setCargando(false)
+        }
     }
-}
 
 return (
     <main>
