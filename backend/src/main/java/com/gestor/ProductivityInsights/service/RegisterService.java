@@ -19,13 +19,15 @@ public class RegisterService implements IRegisterService {
     
     @Override
     public void register(String username, String password, String correo) {
-        if(username.isBlank()){
+        if(username == null || username.isBlank()){
             throw new BusinessException("Username is required");
         }
-        if(correo.isBlank()){
+        if(correo == null || correo.isBlank()){
             throw new BusinessException("Email is required");
         }
-
+        if (password == null || password.isBlank()){
+            throw new BusinessException("Password is required");
+        }
         if(usuarioRepository.existsByNombre(username)){
             throw new BusinessException("Username already exists");
         }
