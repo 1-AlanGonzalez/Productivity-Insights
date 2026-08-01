@@ -27,8 +27,8 @@ public class TareaController {
         this.tareaService = tareaService;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<TareaRequestDTO>> traerTareas(){
+    @GetMapping
+        public ResponseEntity<List<TareaRequestDTO>> traerTareas() {
         return ResponseEntity.ok(tareaService.traerTareas());
     }
 

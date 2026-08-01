@@ -18,8 +18,10 @@ public class TareaService implements ITareaService {
 
     @Override
     public List<TareaRequestDTO> traerTareas() {
-        // Implementación del método para traer tareas
-        return null;
+        return tareaRepository.findAll()
+                .stream()
+                .map(Mapper::toDTO)
+                .toList();
     }
 
     @Override
@@ -53,4 +55,5 @@ public class TareaService implements ITareaService {
         // }
         tareaRepository.delete(tarea);
     }
+    
 }
