@@ -46,6 +46,11 @@ public class TareaService implements ITareaService {
 
     @Override
     public void eliminarTarea(Long id) {
-        // Implementación del método para eliminar una tarea
+        Tarea tarea = tareaRepository.findById(id)
+                .orElseThrow(() -> new BusinessException("la tarea con id: " + id + " no fue encontrada"));
+        // if(tarea.getEstado().equals("completada")){
+        //     throw new BusinessException("la tarea con id: " + id + " ya fue completada y no puede ser eliminada");
+        // }
+        tareaRepository.delete(tarea);
     }
 }
