@@ -23,26 +23,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class TareaController {
     private ITareaService tareaService;
 
+    public TareaController(ITareaService tareaService) {
+        this.tareaService = tareaService;
+    }
+
     @GetMapping()
-    public ResponseEntity<List<TareaRequestDTO>> bingTask(){
-        return ResponseEntity.ok(tareaService.bringTask());
+    public ResponseEntity<List<TareaRequestDTO>> traerTareas(){
+        return ResponseEntity.ok(tareaService.traerTareas());
     }
 
     @PostMapping
-    public ResponseEntity<TareaRequestDTO> createdTask (@RequestBody TareaRequestDTO tareaDTO){
-        TareaRequestDTO createdTask = tareaService.createdTaske(tareaDTO);
+    public ResponseEntity<TareaRequestDTO> crearTarea (@RequestBody TareaRequestDTO tareaDTO){
+        TareaRequestDTO createdTask = tareaService.crearTarea(tareaDTO);
         return ResponseEntity.created(URI.create("/api/tarea" + createdTask.getId())).body(createdTask);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TareaRequestDTO> updateTask(@PathVariable Long id, @RequestBody TareaRequestDTO tareaDTO){
-        TareaRequestDTO updatedTask = tareaService.updateTask(id, tareaDTO);
+        TareaRequestDTO updatedTask = tareaService.actualizarTarea(id, tareaDTO);
         return ResponseEntity.ok(updatedTask);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id){
-        tareaService.deleteTask(id);
+        tareaService.eliminarTarea(id);
         return ResponseEntity.noContent().build();
     }
     
