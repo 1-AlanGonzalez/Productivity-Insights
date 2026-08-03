@@ -52,9 +52,10 @@ public class Tarea {
     @Column(name = "CATEGORIA", nullable = true, length = 50)
     private String categoria; // Categoría de la tarea (opcional)
 
+    @Builder.Default
     @Column(name = "ESTADO")
     @Enumerated(EnumType.STRING)
-    private Estado estado; // Estado de la tarea (Pendiente, Completada)
+    private Estado estado = Estado.PENDIENTE; // Estado de la tarea (Pendiente, En Progreso, Completada) con valor por defecto PENDIENTE
 
     @Column(name = "FECHA_CREACION", nullable = false)
     private LocalDate fechaCreacion; // Fecha de creación de la tarea
@@ -72,17 +73,6 @@ public class Tarea {
     @JoinColumn(name = "ID_USUARIO", nullable = false)
     private Usuario usuario; // Identificador del usuario al que pertenece la tarea
 
-    //Constructor con parámetros para crear una tarea 
-    public Tarea(String titulo, String descripcion, Prioridad prioridad, String categoria,
-                  LocalDate fechaLimite, Usuario usuario) {
-        this.titulo = titulo;
-        this.descripcion = descripcion;
-        this.prioridad = prioridad;
-        this.categoria = categoria;
-        this.fechaLimite = fechaLimite;
-        this.usuario = usuario;
-    }
 
-    
 
 }

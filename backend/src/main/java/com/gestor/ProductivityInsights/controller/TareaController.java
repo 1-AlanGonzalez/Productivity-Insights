@@ -35,7 +35,7 @@ public class TareaController {
     @PostMapping
     public ResponseEntity<TareaRequestDTO> crearTarea (@RequestBody TareaRequestDTO tareaDTO){
         TareaRequestDTO createdTask = tareaService.crearTarea(tareaDTO);
-        return ResponseEntity.created(URI.create("/api/tarea" + createdTask.getId())).body(createdTask);
+        return ResponseEntity.created(URI.create("/api/tarea/" + createdTask.getId())).body(createdTask);
     }
 
     @PutMapping("/{id}")
