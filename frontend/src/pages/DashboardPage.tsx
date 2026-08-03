@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react"
-interface Tarea { // Interfaz para definir la estructura de una tarea
-    id: number
-    titulo: string
-    descripcion: string
-}
+import type { Tarea } from "../types/Tarea"
+import EditarTareaForm from "../components/EditarTareaForm"
 
 function DashboardPage() {
     const [tareas, setTareas] = useState<Tarea[]>([]) // Estado para almacenar las tareas obtenidas del backend
     const [cargando, setCargando] = useState(true) // Estado para indicar si las tareas se están cargando
     const [error, setError] = useState("") // Estado para almacenar cualquier mensaje de error al cargar las tareas
-    
+    const [tareaEditando, setTareaEditando] = useState<Tarea | null>(null)
     useEffect(() => {
         // método asíncrono para cargar las tareas desde el backend
       async function cargarTareas() {
@@ -37,6 +34,20 @@ function DashboardPage() {
     return(
         <div>
             <h1>Mis Tareas</h1>
+                    {tareaEditando && (
+                        <EditarTareaForm
+                            key={tareaEditando.id}
+                            tarea={tareaEditando}
+                            onCancelar={() => setTareaEditando(null)}
+                            onActualizada={(tareaActualizada) => {
+                                setTareas((tareasActuales) =>
+                                    tareasActuales.map((tarea) =>
+                                        tarea.id === tareaActualizada.id
+                                            ? tareaActualizada
+                                            : tarea))
+
+                                setTareaEditando(null)
+                            }}/>)}
 
             <label htmlFor="taskName">Nombre de la tarea:</label>
             <input type="text" id="taskName" placeholder="nombre de la tarea" />
@@ -58,6 +69,9 @@ function DashboardPage() {
                     <div key={tarea.id}>
                         <h3>{tarea.titulo}</h3>
                         <p>{tarea.descripcion}</p>
+                        <button type="button" onClick={() => setTareaEditando(tarea)}>
+                            Editar
+                        </button>
                     </div>
                 ))}
             </div>

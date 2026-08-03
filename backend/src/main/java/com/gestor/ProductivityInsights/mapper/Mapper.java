@@ -12,12 +12,39 @@ import com.gestor.ProductivityInsights.model.Tarea;
 // El patrón Builder es un diseño de patrón que permite construir objetos complejos paso a paso. 
 // En este caso, se utiliza para crear una instancia de TareaRequestDTO de manera controlada y segura.
 public class Mapper {
-    public static TareaRequestDTO toDTO (Tarea tarea){
-        if(tarea == null) return null;
-        return TareaRequestDTO.builder()
-                .id(tarea.getId())
-                .titulo(tarea.getTitulo())
-                .descripcion(tarea.getDescripcion())
-                .build();   
-    }
+    // public static TareaRequestDTO toDTO (Tarea tarea){
+    //     if(tarea == null) return null;
+    //     return TareaRequestDTO.builder()
+    //             .id(tarea.getId())
+    //             .titulo(tarea.getTitulo())
+    //             .descripcion(tarea.getDescripcion())
+    //             .build();   
+    // }
+
+     public static TareaRequestDTO toDTO(Tarea tarea) {
+          if (tarea == null) {
+              return null;
+          }
+
+          return TareaRequestDTO.builder()
+                  .id(tarea.getId())
+                  .titulo(tarea.getTitulo())
+                  .descripcion(tarea.getDescripcion())
+                  .prioridad(tarea.getPrioridad())
+                  .categoria(tarea.getCategoria())
+                  .estado(tarea.getEstado())
+                  .fechaCreacion(tarea.getFechaCreacion())
+                  .fechaLimite(tarea.getFechaLimite())
+                  .fechaCompletada(tarea.getFechaCompletada())
+                  .horaCompletada(tarea.getHoraCompletada())
+                  .idUsuario(obtenerIdUsuario(tarea))
+                  .build();
+      }
+
+      private static Long obtenerIdUsuario(Tarea tarea) {
+          if (tarea.getUsuario() == null) {
+              return null;
+          }
+        return tarea.getUsuario().getId();
+      }
 }

@@ -36,7 +36,8 @@ public class SecurityConfig {
                 .ignoringRequestMatchers(
                     "/api/login",
                     "/api/authRegister/register",
-                    "/api/tarea"
+                    "/api/tarea",
+                    "/api/tarea/**"
                 )
             )
 
