@@ -4,12 +4,13 @@ import com.gestor.ProductivityInsights.service.exception.BusinessException;
 import com.gestor.ProductivityInsights.util.mapper.TareaMapper;
 import com.gestor.ProductivityInsights.persistence.model.Tarea;
 import com.gestor.ProductivityInsights.persistence.repository.TareaRepository;
+import com.gestor.ProductivityInsights.persistence.repository.UsuarioRepository;
 import java.util.List;
 import com.gestor.ProductivityInsights.service.exception.TareaNotFoundException;
 import com.gestor.ProductivityInsights.service.interfaces.ITareaService;
 import org.springframework.stereotype.Service;
 import java.time.LocalTime;
-
+import java.time.LocalDate;
 import com.gestor.ProductivityInsights.persistence.model.enums.Estado;
 
 @Service
