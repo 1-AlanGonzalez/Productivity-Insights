@@ -1,4 +1,4 @@
-export type Prioridad = "ALTA" | "MEDIA" | "BAJA"
+export type Prioridad = "" | "ALTA" | "MEDIA" | "BAJA"
 
 export type Estado = "PENDIENTE" | "COMPLETADA"
 
@@ -15,3 +15,8 @@ export interface Tarea {
     horaCompletada: string | null
     idUsuario: number
 }
+
+export type TareaEditable = Pick<
+    Tarea,
+    "titulo" | "descripcion" | "prioridad" | "categoria" | "estado" | "fechaLimite"
+>
