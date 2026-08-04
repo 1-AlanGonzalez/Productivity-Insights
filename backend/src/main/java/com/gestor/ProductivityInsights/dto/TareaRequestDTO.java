@@ -7,7 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import com.gestor.ProductivityInsights.enums.Estado;
+
 import com.gestor.ProductivityInsights.enums.Prioridad;
 
 @Getter @Setter
@@ -19,9 +21,9 @@ public class TareaRequestDTO {
     private String descripcion;
     private Prioridad prioridad;
     private String categoria;
+    private LocalDate fechaLimite;
     private Estado estado;
     private LocalDate fechaCreacion;
-    private LocalDate fechaLimite;
     private LocalDate fechaCompletada;
     private LocalTime horaCompletada;
     private Long idUsuario;
