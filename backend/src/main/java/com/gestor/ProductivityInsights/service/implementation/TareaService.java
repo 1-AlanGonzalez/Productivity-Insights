@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import com.gestor.ProductivityInsights.persistence.model.enums.Estado;
+import com.gestor.ProductivityInsights.persistence.model.Usuario;
 
 @Service
 public class TareaService implements ITareaService {
@@ -33,6 +34,9 @@ public class TareaService implements ITareaService {
 
     @Override
     public TareaRequestDTO crearTarea(TareaRequestDTO tareaRequestDTO, String correoUsuario) {
+        Usuario usuario = usuarioRepository.findByCorreo(correoUsuario)
+                .orElseThrow(() -> new BusinessException("Usuario no encontrado"));
+
         if(tareaRequestDTO == null) return null;
         if(tareaRequestDTO.getTitulo().isBlank()){
             throw new BusinessException("Title is required");
@@ -41,9 +45,15 @@ public class TareaService implements ITareaService {
             throw new BusinessException("Description is required");
         }
         Tarea tarea = Tarea.builder()
-                .titulo(tareaRequestDTO.getTitulo())
-                .descripcion(tareaRequestDTO.getDescripcion())
-                .build();
+          .titulo(tareaRequestDTO.getTitulo().trim())
+          .descripcion(limpiarTextoOpcional(tareaRequestDTO.getDescripcion()))
+          .prioridad(tareaRequestDTO.getPrioridad())
+          .categoria(limpiarTextoOpcional(tareaRequestDTO.getCategoria()))
+          .estado(Estado.PENDIENTE)
+          .fechaCreacion(LocalDate.now())
+          .fechaLimite(tareaRequestDTO.getFechaLimite())
+          .usuario(usuario)
+          .build();
         return TareaMapper.toDTO(tareaRepository.save(tarea));
     }
 
