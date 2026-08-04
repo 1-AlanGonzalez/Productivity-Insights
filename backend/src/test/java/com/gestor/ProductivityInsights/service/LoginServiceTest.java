@@ -1,11 +1,12 @@
 package com.gestor.ProductivityInsights.service;
 
-import com.gestor.ProductivityInsights.repository.UsuarioRepository;
+import com.gestor.ProductivityInsights.persistence.repository.UsuarioRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.gestor.ProductivityInsights.dto.LoginRequestDTO;
+import com.gestor.ProductivityInsights.presentation.dto.LoginRequestDTO;
 import org.junit.jupiter.api.Test;
-import com.gestor.ProductivityInsights.model.Usuario;
+import com.gestor.ProductivityInsights.persistence.model.Usuario;
+import com.gestor.ProductivityInsights.service.implementation.LoginService;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
