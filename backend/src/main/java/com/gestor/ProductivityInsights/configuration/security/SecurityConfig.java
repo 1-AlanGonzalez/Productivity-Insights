@@ -63,9 +63,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     HttpMethod.POST,
                     "/api/login",
-                    "/api/authRegister/register",
-                    "/api/tarea",
-                    "/api/tarea/**"
+                    "/api/authRegister/register"
                 ).permitAll()
                 .anyRequest().authenticated()
             );
