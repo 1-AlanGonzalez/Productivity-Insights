@@ -8,7 +8,6 @@ import java.util.List;
 import com.gestor.ProductivityInsights.service.exception.TareaNotFoundException;
 import com.gestor.ProductivityInsights.service.interfaces.ITareaService;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
 import java.time.LocalTime;
 
 import com.gestor.ProductivityInsights.persistence.model.enums.Estado;
@@ -16,9 +15,11 @@ import com.gestor.ProductivityInsights.persistence.model.enums.Estado;
 @Service
 public class TareaService implements ITareaService {
     private TareaRepository tareaRepository;
+    private UsuarioRepository usuarioRepository;
 
-    public TareaService(TareaRepository tareaRepository) {
+    public TareaService(TareaRepository tareaRepository, UsuarioRepository usuarioRepository) {
         this.tareaRepository = tareaRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     @Override

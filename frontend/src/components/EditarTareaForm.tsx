@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react"
 import type { Tarea } from "../types/Tarea"
+import { actualizarTarea } from "../services/tareaService"
 
 interface EditarTareaFormProps {
     tarea: Tarea
@@ -20,33 +21,14 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
         setError("")
 
         try {
-            const response = await fetch(
-                `/api/tarea/${formulario.id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({
-                        titulo: formulario.titulo,
-                        descripcion: formulario.descripcion,
-                        prioridad: formulario.prioridad,
-                        categoria: formulario.categoria,
-                        estado: formulario.estado,
-                        fechaLimite: formulario.fechaLimite,
-                    }),
-                }
-            )
-
-            if (!response.ok) {
-                throw new Error(
-                    "No fue posible actualizar la tarea"
-                )
-            }
-
-            const tareaActualizada: Tarea =
-                await response.json()
+            const tareaActualizada = await actualizarTarea(formulario.id, {
+                titulo: formulario.titulo,
+                descripcion: formulario.descripcion,
+                prioridad: formulario.prioridad,
+                categoria: formulario.categoria,
+                estado: formulario.estado,
+                fechaLimite: formulario.fechaLimite,
+            })
 
             onActualizada(tareaActualizada)
         } catch (errorActual) {

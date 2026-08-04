@@ -19,9 +19,9 @@ public class TareaRequestDTO {
     private String descripcion;
     private Prioridad prioridad;
     private String categoria;
+    private LocalDate fechaLimite;
     private Estado estado;
     private LocalDate fechaCreacion;
-    private LocalDate fechaLimite;
     private LocalDate fechaCompletada;
     private LocalTime horaCompletada;
     private Long idUsuario;
