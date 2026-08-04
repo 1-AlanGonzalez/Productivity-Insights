@@ -1,42 +1,45 @@
-import { useState } from "react";
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 function RegisterPage() {
     const navigate = useNavigate()
-    const [nombre, setNombre] = useState("");
-    const [correo, setCorreo] = useState("");
-    const [contrasena, setContrasena] = useState("");
+    const [nombre, setNombre] = useState("")
+    const [correo, setCorreo] = useState("")
+    const [contrasena, setContrasena] = useState("")
 
     const [error, setError] = useState("")
     const [cargando, setCargando] = useState(false)
 
     const register = async () => {
-        setError("")  // Si hubo un error, lo reseteamos
+        setError("") // Si hubo un error, lo reseteamos
         setCargando(true) // Indicamos que estamos cargando
         try {
             const response = await fetch("/api/authRegister/register", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
                     nombre,
                     correo,
-                    contrasena })
-                });
-                
-                if(response.ok) { 
-                    // el response.ok es la respuesta del backend, si es true significa que el usuario se registro correctamente, si es false significa que hubo un error al registrar el usuario
-                    // true el servidor manda 2xx
-                    // false el servidor manda 4xx o 5xx
-                    navigate("/login", { replace: true })
-                    return
-                }
-                const  mensaje = await response.json();
-                setError(mensaje.message || "No fue posible registrar el usuario")
-            } 
-            catch { setError("No fue posible conectar con el servidor") } 
-            finally { setCargando(false)}
+                    contrasena,
+                }),
+            })
+
+            if (response.ok) {
+                // el response.ok es la respuesta del backend, si es true significa que el usuario se registro correctamente, si es false significa que hubo un error al registrar el usuario
+                // true el servidor manda 2xx
+                // false el servidor manda 4xx o 5xx
+                navigate("/login", { replace: true })
+                return
+            }
+            const mensaje = await response.json()
+            setError(mensaje.message || "No fue posible registrar el usuario")
+        } catch {
+            setError("No fue posible conectar con el servidor")
+        } finally {
+            setCargando(false)
+        }
     }
     return (
         <div>
@@ -73,4 +76,4 @@ function RegisterPage() {
     )
 }
 
-export default RegisterPage;
+export default RegisterPage
