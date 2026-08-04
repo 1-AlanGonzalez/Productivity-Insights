@@ -20,22 +20,40 @@ public class RegisterService implements IRegisterService {
     
     @Override
     public void register(RegisterRequestDTO registerRequestDTO) {
-        if(registerRequestDTO.getNombre().isBlank()){
+        if (registerRequestDTO == null) {
+          throw new BusinessException("Los datos son obligatorios");
+        }
+
+        String username = registerRequestDTO.getNombre();
+        String correo = registerRequestDTO.getCorreo();
+        String password = registerRequestDTO.getContrasena();
+
+        if (username == null || username.isBlank()) {
             throw new BusinessException("Username is required");
         }
-        if(registerRequestDTO.getCorreo().isBlank()){
+
+        if (correo == null || correo.isBlank()) {
             throw new BusinessException("Email is required");
         }
 
-        if(usuarioRepository.existsByNombre(registerRequestDTO.getNombre())){
+        if (password == null || password.isBlank()) {
+            throw new BusinessException("Password is required");
+        }
+
+        if (password.length() < 8) {
+            throw new BusinessException(
+                    "Password must be at least 8 characters long"
+            );
+        }
+
+        if (usuarioRepository.existsByNombre(username)) {
             throw new BusinessException("Username already exists");
         }
-        if(usuarioRepository.existsByCorreo(registerRequestDTO.getCorreo())){
+
+        if (usuarioRepository.existsByCorreo(correo)) {
             throw new BusinessException("Email already exists");
         }
-        if(registerRequestDTO.getContrasena().length() < 8){
-            throw new BusinessException("Password must be at least 8 characters long");
-        }
+
         Usuario usuario = new Usuario();
         usuario.setNombre(registerRequestDTO.getNombre());
         usuario.setContrasena(passwordEncoder.encode(registerRequestDTO.getContrasena()));

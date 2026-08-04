@@ -1,11 +1,13 @@
 package com.gestor.ProductivityInsights.repository;
+import java.util.List;
+import java.util.Optional;
 
-// import com.gestor.ProductivityInsights.enums.Estado;
 import com.gestor.ProductivityInsights.model.Tarea;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-// import java.util.List;
-
 public interface TareaRepository extends JpaRepository<Tarea, Long> {
 
+    List<Tarea> findByUsuario_Correo(String correo);
+
+    Optional<Tarea> findByIdAndUsuario_Correo(Long id, String correo);
 }

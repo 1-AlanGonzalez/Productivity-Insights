@@ -8,7 +8,7 @@ import com.gestor.ProductivityInsights.service.ITareaService;
 
 import java.net.URI;
 import java.util.List;
-
+import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +27,11 @@ public class TareaController {
         this.tareaService = tareaService;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<TareaRequestDTO>> traerTareas(){
-        return ResponseEntity.ok(tareaService.traerTareas());
+    @GetMapping
+    public ResponseEntity<List<TareaRequestDTO>> traerTareas(Authentication authentication) {
+        String correoUsuario = authentication.getName();
+
+        return ResponseEntity.ok(tareaService.traerTareas(correoUsuario));
     }
 
     @PostMapping
@@ -37,10 +39,11 @@ public class TareaController {
         TareaRequestDTO createdTask = tareaService.crearTarea(tareaDTO);
         return ResponseEntity.created(URI.create("/api/tarea/" + createdTask.getId())).body(createdTask);
     }
-
+    // Editor de tareas
     @PutMapping("/{id}")
-    public ResponseEntity<TareaRequestDTO> updateTask(@PathVariable Long id, @RequestBody TareaRequestDTO tareaDTO){
-        TareaRequestDTO updatedTask = tareaService.actualizarTarea(id, tareaDTO);
+    public ResponseEntity<TareaRequestDTO> updateTask(@PathVariable Long id, @RequestBody TareaRequestDTO tareaDTO, Authentication authentication){
+        String correoUsuario = authentication.getName();
+        TareaRequestDTO updatedTask = tareaService.actualizarTarea(id, tareaDTO, correoUsuario);
         return ResponseEntity.ok(updatedTask);
     }
 

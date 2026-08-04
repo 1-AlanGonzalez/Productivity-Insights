@@ -1,17 +1,15 @@
 package com.gestor.ProductivityInsights.dto;
 
-// import java.time.LocalDate;
-// import java.time.LocalTime;
-
+import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-// import java.time.LocalTime;
-// import com.gestor.ProductivityInsights.enums.Estado;
+import com.gestor.ProductivityInsights.enums.Estado;
+
 import com.gestor.ProductivityInsights.enums.Prioridad;
 
 @Getter @Setter
@@ -24,5 +22,10 @@ public class TareaRequestDTO {
     private Prioridad prioridad;
     private String categoria;
     private LocalDate fechaLimite;
-
+    private Estado estado;
+    private LocalDate fechaCreacion;
+    private LocalDate fechaCompletada;
+    private LocalTime horaCompletada;
+    private Long idUsuario;
+// 
 }
