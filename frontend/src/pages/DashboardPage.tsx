@@ -4,6 +4,12 @@ import EditarTareaForm from "../components/EditarTareaForm"
 import FiltrosTareas from "../components/FiltrosTareas"
 import CrearTareaForm from "../components/CrearTareaForm"
 import { eliminarTarea, obtenerTareas, cambiarEstadoTarea } from "../services/tareaService"
+import {
+    ordenarTareas,
+    type CriterioOrden,
+    type PreferenciaOrden,
+} from "../utils/ordenarTareas"
+import OrdenTareas from "../components/OrdenTareas";
 
 function DashboardPage() {
     const [tareas, setTareas] = useState<Tarea[]>([]) // Estado para almacenar las tareas obtenidas del backend
@@ -14,6 +20,9 @@ function DashboardPage() {
     const [busqueda, setBusqueda] = useState("")
     const [prioridad, setPrioridad] = useState<Prioridad | "">("")
     const [estado, setEstado] = useState<Estado | "">("")
+
+    const [criterioOrden, setCriterioOrden] = useState<CriterioOrden>("FECHA")
+ const [preferenciaOrden, setPreferenciaOrden] =useState<PreferenciaOrden>("PROXIMA")
 
     useEffect(() => {
         // método asíncrono para cargar las tareas desde el backend
@@ -44,7 +53,11 @@ function DashboardPage() {
 
         return coincideBusqueda && coincidePrioridad && coincideEstado
     })
-
+        const tareasOrdenadas = ordenarTareas(
+            tareasFiltradas,
+            criterioOrden,
+            preferenciaOrden
+        )
      async function handleEliminar(id: number, titulo: string) {
       const confirmada = window.confirm(`¿Seguro que querés eliminar la tarea "${titulo}"?`)
       if (!confirmada) {return}
@@ -85,6 +98,12 @@ function DashboardPage() {
                 onBusquedaChange={setBusqueda}
                 onPrioridadChange={setPrioridad}
                 onEstadoChange={setEstado}
+            />
+            <OrdenTareas
+                criterio={criterioOrden}
+                preferencia={preferenciaOrden}
+                onCriterioChange={setCriterioOrden}
+                onPreferenciaChange={setPreferenciaOrden}
             />
             {tareaEditando && (
                 <EditarTareaForm
@@ -129,7 +148,7 @@ function DashboardPage() {
 
                 {!cargando &&
                     !error &&
-                    tareasFiltradas.map((tarea) => (
+                    tareasOrdenadas.map((tarea) => (
                         <div key={tarea.id}>
  
                             <h3>{tarea.titulo}</h3>
