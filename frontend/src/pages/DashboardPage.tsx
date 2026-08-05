@@ -3,7 +3,7 @@ import type { Estado, Prioridad, Tarea } from "../types/Tarea"
 import EditarTareaForm from "../components/EditarTareaForm"
 import FiltrosTareas from "../components/FiltrosTareas"
 import CrearTareaForm from "../components/CrearTareaForm"
-import { eliminarTarea, obtenerTareas } from "../services/tareaService"
+import { eliminarTarea, obtenerTareas, cambiarEstadoTarea } from "../services/tareaService"
 
 function DashboardPage() {
     const [tareas, setTareas] = useState<Tarea[]>([]) // Estado para almacenar las tareas obtenidas del backend
@@ -45,14 +45,33 @@ function DashboardPage() {
         return coincideBusqueda && coincidePrioridad && coincideEstado
     })
 
-    async function handleEliminar(id: number) {
+     async function handleEliminar(id: number, titulo: string) {
+      const confirmada = window.confirm(`¿Seguro que querés eliminar la tarea "${titulo}"?`)
+      if (!confirmada) {return}
+      setError("")
+      try {
+          await eliminarTarea(id)
+          setTareas((tareasActuales) =>
+              tareasActuales.filter((tarea) => tarea.id !== id))
+      } catch {
+          setError("No fue posible eliminar la tarea")
+      }
+    }
+    async function handleCambiarEstado(tarea: Tarea) {
+        setError("")
+
         try {
-            await eliminarTarea(id)
+            const tareaActualizada = await cambiarEstadoTarea(tarea)
+
             setTareas((tareasActuales) =>
-                tareasActuales.filter((tarea) => tarea.id !== id),
+                tareasActuales.map((tareaActual) =>
+                    tareaActual.id === tareaActualizada.id
+                        ? tareaActualizada
+                        : tareaActual,
+                ),
             )
         } catch {
-            setError("No fue posible eliminar la tarea")
+            setError("No fue posible cambiar el estado de la tarea")
         }
     }
 
@@ -112,8 +131,16 @@ function DashboardPage() {
                     !error &&
                     tareasFiltradas.map((tarea) => (
                         <div key={tarea.id}>
+ 
                             <h3>{tarea.titulo}</h3>
                             <p>{tarea.descripcion}</p>
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={tarea.estado === "COMPLETADA"}
+                                        onChange={() => handleCambiarEstado(tarea)}/>
+                                    Completada
+                                </label>
                             <button
                                 type="button"
                                 onClick={() => setTareaEditando(tarea)}
@@ -122,8 +149,7 @@ function DashboardPage() {
                             </button>
                             <button
                                 type="button"
-                                onClick={() => handleEliminar(tarea.id)}
-                            >
+                                onClick={() => handleEliminar(tarea.id, tarea.titulo)}>
                                 Eliminar
                             </button>
                         </div>
