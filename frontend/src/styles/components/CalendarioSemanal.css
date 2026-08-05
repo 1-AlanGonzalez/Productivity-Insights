@@ -1,0 +1,299 @@
+.weekly-calendar {
+  min-width: 0;
+  padding: 1.25rem;
+  border: 0;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.weekly-calendar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.weekly-calendar__header p,
+.weekly-calendar__header h2 {
+  margin: 0;
+}
+
+.weekly-calendar__header p {
+  margin-bottom: 0.3rem;
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.weekly-calendar__header h2 {
+  font-size: 1.2rem;
+}
+
+.weekly-calendar__header span {
+  display: block;
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.weekly-calendar__navigation {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.weekly-calendar__navigation button {
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0.45rem 0.7rem;
+  border: 0;
+  background: var(--surface-raised);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.weekly-calendar__navigation button:hover {
+  background: #242424;
+  color: var(--accent-light);
+}
+
+.weekly-calendar__scroll {
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.weekly-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(165px, 1fr));
+  min-width: 1155px;
+  border: 0;
+  overflow: hidden;
+}
+
+.week-day {
+  min-height: 420px;
+  border-right: 0;
+  background: var(--surface-soft);
+}
+
+.week-day:last-child {
+  border-right: 0;
+}
+
+.week-day__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border-bottom: 0;
+  color: var(--muted);
+}
+
+.week-day__header span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.week-day__header strong {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 0;
+  color: var(--text);
+}
+
+.week-day--today .week-day__header strong {
+  background: var(--accent);
+  color: #0a0d14;
+}
+
+.week-day__tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.65rem;
+}
+
+.week-day__empty {
+  margin: 1rem 0;
+  color: var(--muted-dark);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+.week-task {
+  padding: 0.8rem;
+  border: 0;
+  background: var(--surface-raised);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+.week-task--completed {
+  background: #0d1713;
+  opacity: 0.82;
+}
+
+.week-task--completed h3 {
+  color: #63d69e;
+  text-decoration: line-through;
+  text-decoration-color: #42c889;
+  text-decoration-thickness: 2px;
+}
+
+.week-task__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+}
+
+.week-task__priority,
+.week-task__category {
+  overflow: hidden;
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.week-task__priority {
+  padding: 0.2rem 0.4rem;
+  border-radius: 0;
+}
+
+.week-task__priority--alta {
+  background: #321519;
+  color: #ff7186;
+}
+
+.week-task__priority--media {
+  background: #302411;
+  color: #f0b84b;
+}
+
+.week-task__priority--baja,
+.week-task__priority--sin-prioridad {
+  background: #10251f;
+  color: #58d5aa;
+}
+
+.week-task__category {
+  color: var(--muted);
+}
+
+.week-task h3 {
+  margin: 0.65rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.35;
+}
+
+.week-task > p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.week-task__check {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.7rem;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.week-task__check input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #42c889;
+}
+
+.week-task__check input:checked + span {
+  color: #63d69e;
+  font-weight: 800;
+}
+
+.week-task__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.35rem;
+  margin-top: 0.65rem;
+}
+
+.week-task__actions button {
+  padding: 0.38rem;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 750;
+}
+
+.week-task__actions button:hover {
+  background: #242424;
+  color: var(--text);
+}
+
+.week-task__actions .week-task__delete:hover {
+  background: #241313;
+  color: var(--danger-light);
+}
+
+.undated-tasks {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 0;
+}
+
+.undated-tasks__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+
+.undated-tasks__heading h3 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.undated-tasks__heading span {
+  display: grid;
+  min-width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 0;
+  background: var(--surface-raised);
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.undated-tasks__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0.65rem;
+}
+
+@media (max-width: 620px) {
+  .weekly-calendar {
+    padding: 0.85rem;
+  }
+
+  .weekly-calendar__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
