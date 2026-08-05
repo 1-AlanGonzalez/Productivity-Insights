@@ -1,81 +1,89 @@
 import { useEffect, useState } from "react"
-import type { Estado, Prioridad, Tarea } from "../types/Tarea"
+import CalendarioSemanal from "../components/CalendarioSemanal"
+import CrearTareaForm from "../components/CrearTareaForm"
 import EditarTareaForm from "../components/EditarTareaForm"
 import FiltrosTareas from "../components/FiltrosTareas"
-import CrearTareaForm from "../components/CrearTareaForm"
-import { eliminarTarea, obtenerTareas, cambiarEstadoTarea } from "../services/tareaService"
+import OrdenTareas from "../components/OrdenTareas"
+import { cambiarEstadoTarea, eliminarTarea, obtenerTareas } from "../services/tareaService"
+import "../styles/pages/DashboardPage.css"
+import type { Estado, Prioridad, Tarea } from "../types/Tarea"
 import {
     ordenarTareas,
     type CriterioOrden,
     type PreferenciaOrden,
 } from "../utils/ordenarTareas"
-import OrdenTareas from "../components/OrdenTareas";
 
 function DashboardPage() {
-    const [tareas, setTareas] = useState<Tarea[]>([]) // Estado para almacenar las tareas obtenidas del backend
-    const [cargando, setCargando] = useState(true) // Estado para indicar si las tareas se están cargando
-    const [error, setError] = useState("") // Estado para almacenar cualquier mensaje de error al cargar las tareas
+    const [tareas, setTareas] = useState<Tarea[]>([])
+    const [cargando, setCargando] = useState(true)
+    const [error, setError] = useState("")
     const [tareaEditando, setTareaEditando] = useState<Tarea | null>(null)
 
     const [busqueda, setBusqueda] = useState("")
     const [prioridad, setPrioridad] = useState<Prioridad | "">("")
     const [estado, setEstado] = useState<Estado | "">("")
-
     const [criterioOrden, setCriterioOrden] = useState<CriterioOrden>("FECHA")
- const [preferenciaOrden, setPreferenciaOrden] =useState<PreferenciaOrden>("PROXIMA")
+    const [preferenciaOrden, setPreferenciaOrden] = useState<PreferenciaOrden>("PROXIMA")
 
     useEffect(() => {
-        // método asíncrono para cargar las tareas desde el backend
         async function cargarTareas() {
             try {
-                const datos = await obtenerTareas() // Llamada a la función para obtener las tareas desde el backend
-                setTareas(datos) // Se actualiza el estado con las tareas obtenidas
+                const datos = await obtenerTareas()
+                setTareas(datos)
             } catch {
-                setError("No fue posible obtener las tareas") // Se actualiza el estado de error si ocurre un problema al obtener las tareas
+                setError("No fue posible obtener las tareas")
             } finally {
-                setCargando(false) // Se indica que la carga de tareas ha finalizado
+                setCargando(false)
             }
         }
+
         cargarTareas()
     }, [])
 
     const tareasFiltradas = tareas.filter((tarea) => {
         const textoBuscado = busqueda.trim().toLowerCase()
-
         const coincideBusqueda =
             tarea.titulo.toLowerCase().includes(textoBuscado) ||
             (tarea.descripcion ?? "").toLowerCase().includes(textoBuscado)
-
-        const coincidePrioridad =
-            prioridad === "" || tarea.prioridad === prioridad
-
+        const coincidePrioridad = prioridad === "" || tarea.prioridad === prioridad
         const coincideEstado = estado === "" || tarea.estado === estado
 
         return coincideBusqueda && coincidePrioridad && coincideEstado
     })
-        const tareasOrdenadas = ordenarTareas(
-            tareasFiltradas,
-            criterioOrden,
-            preferenciaOrden
-        )
-     async function handleEliminar(id: number, titulo: string) {
-      const confirmada = window.confirm(`¿Seguro que querés eliminar la tarea "${titulo}"?`)
-      if (!confirmada) {return}
-      setError("")
-      try {
-          await eliminarTarea(id)
-          setTareas((tareasActuales) =>
-              tareasActuales.filter((tarea) => tarea.id !== id))
-      } catch {
-          setError("No fue posible eliminar la tarea")
-      }
+
+    const tareasOrdenadas = ordenarTareas(
+        tareasFiltradas,
+        criterioOrden,
+        preferenciaOrden,
+    )
+
+    const tareasCompletadas = tareas.filter((tarea) => tarea.estado === "COMPLETADA").length
+    const tareasPendientes = tareas.length - tareasCompletadas
+    const porcentajeCompletado = tareas.length === 0
+        ? 0
+        : Math.round((tareasCompletadas / tareas.length) * 100)
+
+    async function handleEliminar(id: number, titulo: string) {
+        const confirmada = window.confirm(`¿Seguro que querés eliminar la tarea "${titulo}"?`)
+        if (!confirmada) return
+
+        setError("")
+
+        try {
+            await eliminarTarea(id)
+            setTareas((tareasActuales) =>
+                tareasActuales.filter((tarea) => tarea.id !== id),
+            )
+        } catch {
+            setError("No fue posible eliminar la tarea")
+        }
     }
+
     async function handleCambiarEstado(tarea: Tarea) {
         setError("")
 
         try {
             const tareaActualizada = await cambiarEstadoTarea(tarea)
-
             setTareas((tareasActuales) =>
                 tareasActuales.map((tareaActual) =>
                     tareaActual.id === tareaActualizada.id
@@ -88,93 +96,89 @@ function DashboardPage() {
         }
     }
 
+    function handleTareaActualizada(tareaActualizada: Tarea) {
+        setTareas((tareasActuales) =>
+            tareasActuales.map((tarea) =>
+                tarea.id === tareaActualizada.id ? tareaActualizada : tarea,
+            ),
+        )
+        setTareaEditando(null)
+    }
+
     return (
-        <div>
-            <h1>Mis Tareas</h1>
-            <FiltrosTareas
-                busqueda={busqueda}
-                prioridad={prioridad}
-                estado={estado}
-                onBusquedaChange={setBusqueda}
-                onPrioridadChange={setPrioridad}
-                onEstadoChange={setEstado}
-            />
-            <OrdenTareas
-                criterio={criterioOrden}
-                preferencia={preferenciaOrden}
-                onCriterioChange={setCriterioOrden}
-                onPreferenciaChange={setPreferenciaOrden}
-            />
-            {tareaEditando && (
-                <EditarTareaForm
-                    key={tareaEditando.id}
-                    tarea={tareaEditando}
-                    onCancelar={() => setTareaEditando(null)}
-                    onActualizada={(tareaActualizada) => {
-                        setTareas((tareasActuales) =>
-                            tareasActuales.map((tarea) =>
-                                tarea.id === tareaActualizada.id
-                                    ? tareaActualizada
-                                    : tarea,
-                            ),
-                        )
+        <main className="dashboard-page">
+            <header className="dashboard-header">
+                <div className="dashboard-header__title">
+                    <div>
+                        <p>Productivity Insights</p>
+                    </div>
+     
+                </div>
+            </header>
 
-                        setTareaEditando(null)
-                    }}
-                />
-            )}
+            <div className="dashboard-layout">
+                <aside className="dashboard-sidebar">
+                    <div className="dashboard-sidebar__heading">
+                        <span>Vista semanal</span>
+                        <h2>Filtros</h2>
+                        <p>Ajustá las tareas que querés ver en el calendario.</p>
+                    </div>
 
-            <CrearTareaForm
-                onTareaCreada={(nuevaTarea) => {
-                    setTareas((anteriores) => [...anteriores, nuevaTarea])
-                }}
-            />
+                    <FiltrosTareas
+                        busqueda={busqueda}
+                        prioridad={prioridad}
+                        estado={estado}
+                        onBusquedaChange={setBusqueda}
+                        onPrioridadChange={setPrioridad}
+                        onEstadoChange={setEstado}
+                    />
 
-            <div>
-                {cargando && <p>Cargando tareas...</p>}
+                    <OrdenTareas
+                        criterio={criterioOrden}
+                        preferencia={preferenciaOrden}
+                        onCriterioChange={setCriterioOrden}
+                        onPreferenciaChange={setPreferenciaOrden}
+                    />
+                </aside>
 
-                {error && <p role="alert">{error}</p>}
+                <section className="dashboard-content">
+                    
 
-                {!cargando && !error && tareas.length === 0 && (
-                    <p>No hay tareas para mostrar.</p>
-                )}
-
-                {!cargando &&
-                    !error &&
-                    tareas.length > 0 &&
-                    tareasFiltradas.length === 0 && (
-                        <p>No hay tareas que coincidan con los filtros.</p>
+                    {tareaEditando && (
+                        <EditarTareaForm
+                            key={tareaEditando.id}
+                            tarea={tareaEditando}
+                            onCancelar={() => setTareaEditando(null)}
+                            onActualizada={handleTareaActualizada}
+                        />
                     )}
 
-                {!cargando &&
-                    !error &&
-                    tareasOrdenadas.map((tarea) => (
-                        <div key={tarea.id}>
- 
-                            <h3>{tarea.titulo}</h3>
-                            <p>{tarea.descripcion}</p>
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={tarea.estado === "COMPLETADA"}
-                                        onChange={() => handleCambiarEstado(tarea)}/>
-                                    Completada
-                                </label>
-                            <button
-                                type="button"
-                                onClick={() => setTareaEditando(tarea)}
-                            >
-                                Editar
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleEliminar(tarea.id, tarea.titulo)}>
-                                Eliminar
-                            </button>
-                        </div>
-                    ))}
+                    {cargando && <p className="dashboard-message">Cargando tareas...</p>}
+                    {error && <p className="dashboard-message dashboard-message--error" role="alert">{error}</p>}
+                    {!cargando && !error && tareas.length === 0 && (
+                        <p className="dashboard-message">Todavía no hay tareas. Creá la primera para comenzar.</p>
+                    )}
+                    {!cargando && !error && tareas.length > 0 && tareasFiltradas.length === 0 && (
+                        <p className="dashboard-message">No hay tareas que coincidan con los filtros.</p>
+                    )}
+
+                    {!cargando && !error && (
+                        <CalendarioSemanal
+                            tareas={tareasOrdenadas}
+                            onCambiarEstado={handleCambiarEstado}
+                            onEditar={setTareaEditando}
+                            onEliminar={handleEliminar}
+                        />
+                    )}
+                    <CrearTareaForm
+                        onTareaCreada={(nuevaTarea) =>
+                            setTareas((tareasActuales) => [...tareasActuales, nuevaTarea])
+                        }
+                    />
+                </section>
             </div>
-        </div>
+            
+        </main>
     )
 }
 

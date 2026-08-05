@@ -3,6 +3,7 @@ import type {
     CriterioOrden,
     PreferenciaOrden,
 } from "../utils/ordenarTareas"
+import "../styles/components/OrdenTareas.css"
 
 interface OrdenTareasProps {
     criterio: CriterioOrden
@@ -41,7 +42,7 @@ function OrdenTareas({
     }
 
     return (
-        <div>
+        <div className="task-order">
             <label htmlFor="criterioOrden">
                 Ordenar por:
             </label>

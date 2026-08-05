@@ -1,4 +1,5 @@
 import type { Estado, Prioridad } from "../types/Tarea"
+import "../styles/components/FiltrosTareas.css"
 
 interface FiltrosTareasProps {
     busqueda: string
@@ -18,7 +19,7 @@ function FiltrosTareas({
     onEstadoChange,
 }: FiltrosTareasProps) {
     return (
-        <section>
+        <section className="task-filters">
             <h2>Buscar y filtrar</h2>
 
             <label htmlFor="taskSearch">
