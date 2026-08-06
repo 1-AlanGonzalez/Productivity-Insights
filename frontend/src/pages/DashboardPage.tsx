@@ -4,6 +4,7 @@ import EditarTareaForm from "../components/EditarTareaForm"
 import FiltrosTareas from "../components/FiltrosTareas"
 import CrearTareaForm from "../components/CrearTareaForm"
 import TareaCard from "../components/TareaCard"
+import EstadisticaTarea from "../components/EstadisticaTarea"
 import { eliminarTarea, obtenerTareas } from "../services/tareaService"
 
 function DashboardPage() {
@@ -59,6 +60,7 @@ function DashboardPage() {
 
     return (
         <div>
+
             <h1>Mis Tareas</h1>
             <FiltrosTareas
                 busqueda={busqueda}
@@ -68,6 +70,9 @@ function DashboardPage() {
                 onPrioridadChange={setPrioridad}
                 onEstadoChange={setEstado}
             />
+
+            <EstadisticaTarea tareas={tareas} />
+
             {tareaEditando && (
                 <EditarTareaForm
                     key={tareaEditando.id}

@@ -29,29 +29,29 @@ public class RegisterService implements IRegisterService {
         String password = registerRequestDTO.getContrasena();
 
         if (username == null || username.isBlank()) {
-            throw new BusinessException("Username is required");
+            throw new BusinessException("El nombre de usuario es obligatorio");
         }
 
         if (correo == null || correo.isBlank()) {
-            throw new BusinessException("Email is required");
+            throw new BusinessException("El email es obligatorio");
         }
 
         if (password == null || password.isBlank()) {
-            throw new BusinessException("Password is required");
+            throw new BusinessException("La contraseña es obligatoria");
         }
 
         if (password.length() < 8) {
             throw new BusinessException(
-                    "Password must be at least 8 characters long"
+                    "La contraseña debe tener al menos 8 caracteres"
             );
         }
 
         if (usuarioRepository.existsByNombre(username)) {
-            throw new BusinessException("Username already exists");
+            throw new BusinessException("El nombre de usuario ya existe");
         }
 
         if (usuarioRepository.existsByCorreo(correo)) {
-            throw new BusinessException("Email already exists");
+            throw new BusinessException("El email ya existe");
         }
 
         Usuario usuario = new Usuario();
