@@ -12,7 +12,7 @@ import {
     type CriterioOrden,
     type PreferenciaOrden,
 } from "../utils/ordenarTareas"
-
+import EstadisticaTarea from "../components/EstadisticaTarea"
 function DashboardPage() {
     const [tareas, setTareas] = useState<Tarea[]>([])
     const [cargando, setCargando] = useState(true)

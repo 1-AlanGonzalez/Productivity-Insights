@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Tarea } from "../types/Tarea";
 import { crearTarea } from "../services/tareaService";
+import {toast, Toaster} from "sonner";
 import "../styles/components/TareaForm.css";
 
 
@@ -19,6 +20,11 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
     };
     const [tarea, setTarea] = useState(tareaInicial);
     const [error, setError] = useState("");
+    const [errores,setErrores] = useState({
+        titulo: "",
+        descripcion: "",
+        prioridad: "",
+    })
     const [creando, setCreando] = useState(false);
 
 
@@ -30,7 +36,39 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
         }));
     };
 
+
+    function validarFormulario(){
+        const nuevosErrores: {
+            titulo: string;
+            descripcion: string;
+            prioridad: string
+        } = {
+            titulo: "",
+            descripcion: "",
+            prioridad: ""
+        };
+
+        if(!tarea.titulo?.trim()){
+            nuevosErrores.titulo = "El título es obligatorio";
+        }
+
+        if(!tarea.descripcion?.trim()){
+            nuevosErrores.descripcion = "La descripción es obligatoria";
+        }
+
+        if(!tarea.prioridad?.trim()){
+            nuevosErrores.prioridad = "La prioridad es obligatoria";
+        }
+
+        setErrores(nuevosErrores);
+
+        return Object.values(nuevosErrores).every(error => error === "");
+    }
+
+
     const handleSubmit = async () => {
+        if(!validarFormulario()) return 
+
         setCreando(true);
         setError("");
 
@@ -38,12 +76,19 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
             const tareaCreada = await crearTarea(tarea);
             onTareaCreada(tareaCreada);
             setTarea(tareaInicial);
+            toast.success("Tarea creada exitosamente");
         } catch (errorActual) {
             setError(
                 errorActual instanceof Error
                     ? errorActual.message
                     : "No fue posible crear la tarea"
             );
+
+            toast.error(
+                    errorActual instanceof Error
+                        ? errorActual.message
+                        : "No fue posible crear la tarea"
+                );
         } finally {
             setCreando(false);
         }
@@ -58,6 +103,7 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
                 value={tarea.titulo}
                 onChange={handleChange}
             />
+            {errores.titulo && <p role="alert">{errores.titulo}</p>}
             <label htmlFor="tareaDescripcion">Descripción de la tarea:</label>
             <textarea 
                 id="tareaDescripcion" 
@@ -66,6 +112,7 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
                 value={tarea.descripcion ?? ""}
                 onChange={handleChange}
             ></textarea>
+            {errores.descripcion && <p role="alert">{errores.descripcion}</p>}
             <label htmlFor="tareaPrioridad">Prioridad de la tarea:</label>
             <select 
                 id="tareaPrioridad"
@@ -78,6 +125,7 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
                 <option value="MEDIA">Media</option>
                 <option value="BAJA">Baja</option>
             </select>
+            {errores.prioridad && <p role="alert">{errores.prioridad}</p>}
             <label htmlFor="tareaCategoria">Categoría de la tarea:</label>
             <input
                 id="tareaCategoria"
