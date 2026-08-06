@@ -1,6 +1,7 @@
 import { useState } from "react"
 import type { Tarea } from "../types/Tarea"
 import "../styles/components/CalendarioSemanal.css"
+import TareaCard from "./TareaCard";
 
 interface CalendarioSemanalProps {
     tareas: Tarea[]
@@ -55,51 +56,17 @@ function CalendarioSemanal({
             return nuevaSemana
         })
     }
-
     function renderTarea(tarea: Tarea) {
-        const clasePrioridad = tarea.prioridad
-            ? tarea.prioridad.toLowerCase()
-            : "sin-prioridad"
-
-        return (
-            <article
-                className={`week-task ${tarea.estado === "COMPLETADA" ? "week-task--completed" : ""}`}
-                key={tarea.id}
-            >
-                <div className="week-task__top">
-                    <span className={`week-task__priority week-task__priority--${clasePrioridad}`}>
-                        {tarea.prioridad || "Sin prioridad"}
-                    </span>
-                    {tarea.categoria && <span className="week-task__category">{tarea.categoria}</span>}
-                </div>
-
-                <h3>{tarea.titulo}</h3>
-                {tarea.descripcion && <p>{tarea.descripcion}</p>}
-
-                <label className="week-task__check">
-                    <input
-                        type="checkbox"
-                        checked={tarea.estado === "COMPLETADA"}
-                        onChange={() => onCambiarEstado(tarea)}
-                    />
-                    <span>Completada</span>
-                </label>
-
-                <div className="week-task__actions">
-                    <button type="button" onClick={() => onEditar(tarea)}>
-                        Editar
-                    </button>
-                    <button
-                        className="week-task__delete"
-                        type="button"
-                        onClick={() => onEliminar(tarea.id, tarea.titulo)}
-                    >
-                        Eliminar
-                    </button>
-                </div>
-            </article>
-        )
-    }
+      return (
+          <TareaCard
+              key={tarea.id}
+              tarea={tarea}
+              onEditar={onEditar}
+              onEliminar={onEliminar}
+              onCambiarEstado={onCambiarEstado}
+          />
+      )
+  }
 
     return (
         <section className="weekly-calendar" aria-labelledby="weekly-calendar-title">
