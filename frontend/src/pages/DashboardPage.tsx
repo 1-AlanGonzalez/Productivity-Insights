@@ -3,9 +3,15 @@ import CalendarioSemanal from "../components/CalendarioSemanal"
 import CrearTareaForm from "../components/CrearTareaForm"
 import EditarTareaForm from "../components/EditarTareaForm"
 import FiltrosTareas from "../components/FiltrosTareas"
-import CrearTareaForm from "../components/CrearTareaForm"
-import TareaCard from "../components/TareaCard"
-import { eliminarTarea, obtenerTareas } from "../services/tareaService"
+import OrdenTareas from "../components/OrdenTareas"
+import { cambiarEstadoTarea, eliminarTarea, obtenerTareas } from "../services/tareaService"
+import "../styles/pages/DashboardPage.css"
+import type { Estado, Prioridad, Tarea } from "../types/Tarea"
+import {
+    ordenarTareas,
+    type CriterioOrden,
+    type PreferenciaOrden,
+} from "../utils/ordenarTareas"
 
 function DashboardPage() {
     const [tareas, setTareas] = useState<Tarea[]>([])
@@ -155,17 +161,25 @@ function DashboardPage() {
                     {!cargando && !error && tareas.length > 0 && tareasFiltradas.length === 0 && (
                         <p className="dashboard-message">No hay tareas que coincidan con los filtros.</p>
                     )}
+                    
+                    {!cargando && !error && (
+                    <>
+                        <EstadisticaTarea tareas={tareas} />
 
-                {!cargando &&
-                    !error &&
-                    tareasFiltradas.map((tarea) => (
-                        <TareaCard
-                            key={tarea.id}
-                            tarea={tarea}
+                        <CalendarioSemanal
+                            tareas={tareasOrdenadas}
+                            onCambiarEstado={handleCambiarEstado}
                             onEditar={setTareaEditando}
                             onEliminar={handleEliminar}
                         />
-                    ))}
+                    </>
+                )}
+                    <CrearTareaForm
+                        onTareaCreada={(nuevaTarea) =>
+                            setTareas((tareasActuales) => [...tareasActuales, nuevaTarea])
+                        }
+                    />
+                </section>
             </div>
             
         </main>
