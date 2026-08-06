@@ -3,6 +3,7 @@ import type { Estado, Prioridad, Tarea } from "../types/Tarea"
 import EditarTareaForm from "../components/EditarTareaForm"
 import FiltrosTareas from "../components/FiltrosTareas"
 import CrearTareaForm from "../components/CrearTareaForm"
+import TareaCard from "../components/TareaCard"
 import { eliminarTarea, obtenerTareas } from "../services/tareaService"
 
 function DashboardPage() {
@@ -111,22 +112,12 @@ function DashboardPage() {
                 {!cargando &&
                     !error &&
                     tareasFiltradas.map((tarea) => (
-                        <div key={tarea.id}>
-                            <h3>{tarea.titulo}</h3>
-                            <p>{tarea.descripcion}</p>
-                            <button
-                                type="button"
-                                onClick={() => setTareaEditando(tarea)}
-                            >
-                                Editar
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleEliminar(tarea.id)}
-                            >
-                                Eliminar
-                            </button>
-                        </div>
+                        <TareaCard
+                            key={tarea.id}
+                            tarea={tarea}
+                            onEditar={setTareaEditando}
+                            onEliminar={handleEliminar}
+                        />
                     ))}
             </div>
         </div>
