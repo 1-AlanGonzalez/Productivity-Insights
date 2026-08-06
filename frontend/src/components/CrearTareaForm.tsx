@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Tarea } from "../types/Tarea";
 import { crearTarea } from "../services/tareaService";
 import {toast, Toaster} from "sonner";
+import "../styles/components/TareaForm.css";
 
 
 type CrearTareaFormProps = {
@@ -94,7 +95,7 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
     }
 
     return(
-        <div><label htmlFor="tarea">Nombre de la tarea:</label>
+        <div className="task-form"><h2>Nueva tarea</h2><label htmlFor="tarea">Nombre de la tarea:</label>
             <input type="text" 
                 id="tarea" 
                 name="titulo"
@@ -142,7 +143,7 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
                 onChange={handleChange}
             />
             {error && <p role="alert">{error}</p>}
-            <button onClick={handleSubmit} disabled={creando}>
+            <button className="task-form__submit" onClick={handleSubmit} disabled={creando}>
                 {creando ? "Agregando..." : "Agregar tarea"}
             </button>
     

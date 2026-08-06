@@ -59,3 +59,19 @@ export async function eliminarTarea(id: number): Promise<void> {
         throw new Error("No fue posible eliminar la tarea");
     }
 }
+
+export async function cambiarEstadoTarea(tarea: Tarea): Promise<Tarea> {
+      const nuevoEstado =
+          tarea.estado === "COMPLETADA"
+              ? "PENDIENTE"
+              : "COMPLETADA"
+
+      return actualizarTarea(tarea.id, {
+          titulo: tarea.titulo,
+          descripcion: tarea.descripcion,
+          prioridad: tarea.prioridad,
+          categoria: tarea.categoria,
+          estado: nuevoEstado,
+          fechaLimite: tarea.fechaLimite,
+      })
+  }
