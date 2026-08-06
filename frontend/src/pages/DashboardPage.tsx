@@ -3,15 +3,9 @@ import CalendarioSemanal from "../components/CalendarioSemanal"
 import CrearTareaForm from "../components/CrearTareaForm"
 import EditarTareaForm from "../components/EditarTareaForm"
 import FiltrosTareas from "../components/FiltrosTareas"
-import OrdenTareas from "../components/OrdenTareas"
-import { cambiarEstadoTarea, eliminarTarea, obtenerTareas } from "../services/tareaService"
-import "../styles/pages/DashboardPage.css"
-import type { Estado, Prioridad, Tarea } from "../types/Tarea"
-import {
-    ordenarTareas,
-    type CriterioOrden,
-    type PreferenciaOrden,
-} from "../utils/ordenarTareas"
+import CrearTareaForm from "../components/CrearTareaForm"
+import TareaCard from "../components/TareaCard"
+import { eliminarTarea, obtenerTareas } from "../services/tareaService"
 
 function DashboardPage() {
     const [tareas, setTareas] = useState<Tarea[]>([])
@@ -162,20 +156,16 @@ function DashboardPage() {
                         <p className="dashboard-message">No hay tareas que coincidan con los filtros.</p>
                     )}
 
-                    {!cargando && !error && (
-                        <CalendarioSemanal
-                            tareas={tareasOrdenadas}
-                            onCambiarEstado={handleCambiarEstado}
+                {!cargando &&
+                    !error &&
+                    tareasFiltradas.map((tarea) => (
+                        <TareaCard
+                            key={tarea.id}
+                            tarea={tarea}
                             onEditar={setTareaEditando}
                             onEliminar={handleEliminar}
                         />
-                    )}
-                    <CrearTareaForm
-                        onTareaCreada={(nuevaTarea) =>
-                            setTareas((tareasActuales) => [...tareasActuales, nuevaTarea])
-                        }
-                    />
-                </section>
+                    ))}
             </div>
             
         </main>
