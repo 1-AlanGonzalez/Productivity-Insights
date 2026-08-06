@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react"
 import type { Tarea } from "../types/Tarea"
 import { actualizarTarea } from "../services/tareaService"
+import "../styles/components/TareaForm.css"
 
 interface EditarTareaFormProps {
     tarea: Tarea
@@ -42,7 +43,7 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
         }
     }
     return (
-        <form onSubmit={guardarCambios}>
+        <form className="task-form task-form--edit" onSubmit={guardarCambios}>
             <h2>Editar tarea</h2>
 
             <label htmlFor="editTaskName">
@@ -144,12 +145,14 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
             />
             {error && <p role="alert">{error}</p>}
 
-            <button type="submit" disabled={guardando}>
-                {guardando ? "Guardando..." : "Guardar cambios"}
-            </button>
-             <button type="button" onClick={onCancelar} disabled={guardando}>
-                Cancelar
-            </button>
+            <div className="task-form__actions">
+                <button type="submit" disabled={guardando}>
+                    {guardando ? "Guardando..." : "Guardar cambios"}
+                </button>
+                <button className="task-form__cancel" type="button" onClick={onCancelar} disabled={guardando}>
+                    Cancelar
+                </button>
+            </div>
         </form>
     )
 }
