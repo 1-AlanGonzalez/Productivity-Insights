@@ -321,51 +321,90 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .dashboard-toolbar {
+.dashboard-toolbar {
+  display: grid;
+  grid-template-columns:
+    auto
+    minmax(0, 1fr);
+  align-items: end;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.dashboard-toolbar__panel {
+    min-width: 0;
+  }
+
+  .dashboard-toolbar__controls {
     display: grid;
     grid-template-columns:
-      auto
       minmax(420px, 1fr)
       minmax(300px, 0.7fr);
     align-items: end;
     gap: 0.85rem;
+  }
+
+  .dashboard-toolbar__toggle {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    box-shadow: none;
+    min-height: 44px;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: var(--glass-field);
+    color: var(--text);
+    font-weight: 800;
+  }
+.dashboard-toolbar .dashboard-sidebar__create-task {
+  width: auto;
+  min-width: 150px;
+  margin: 0;
+}
+
+.dashboard-toolbar .task-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(120px, 1fr));
+    padding-top: 0;
   }
 
+.dashboard-toolbar .task-order {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-toolbar {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+.dashboard-toolbar__controls {
+    grid-template-columns: 1fr;
+  }
   .dashboard-toolbar .dashboard-sidebar__create-task {
-    width: auto;
-    min-width: 150px;
-    margin: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 560px) {
+  .dashboard-toolbar__toggle {
+    display: flex;
   }
 
-  .dashboard-toolbar .task-filters-panel {
-    min-width: 0;
-    padding: 0;
+  .dashboard-toolbar__controls {
+    display: none;
+    padding-top: 0.75rem;
+  }
+
+  .dashboard-toolbar__controls--open {
+    display: grid;
   }
 
   .dashboard-toolbar .task-filters {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(120px, 1fr));
-    padding-top: 0.7rem;
+    grid-template-columns: 1fr;
   }
-
-  .dashboard-toolbar .task-order {
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-
-  @media (max-width: 1100px) {
-    .dashboard-toolbar {
-      grid-template-columns: 1fr;
-      align-items: stretch;
-    }
-
-    .dashboard-toolbar .dashboard-sidebar__create-task {
-      width: 100%;
-    }
-  }
+}

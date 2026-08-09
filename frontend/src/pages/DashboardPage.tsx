@@ -26,7 +26,7 @@ function DashboardPage() {
     const [estado, setEstado] = useState<FiltroEstado>("")
     const [criterioOrden, setCriterioOrden] = useState<CriterioOrden>("FECHA")
     const [preferenciaOrden, setPreferenciaOrden] = useState<PreferenciaOrden>("PROXIMA")
-
+    const [controlesAbiertos, setControlesAbiertos] = useState(false)
     useEffect(() => {
         async function cargarTareas() {
             try {
@@ -132,21 +132,48 @@ function DashboardPage() {
                     Nueva tarea
                 </button>
 
-                <FiltrosTareas
-                    busqueda={busqueda}
-                    prioridad={prioridad}
-                    estado={estado}
-                    onBusquedaChange={setBusqueda}
-                    onPrioridadChange={setPrioridad}
-                    onEstadoChange={setEstado}
-                />
+                 <div className="dashboard-toolbar__panel">
+      <button
+          type="button"
+          className="dashboard-toolbar__toggle"
+          aria-expanded={controlesAbiertos}
+          aria-controls="task-controls"
+          onClick={() =>
+              setControlesAbiertos((abiertos) => !abiertos)
+          }
+      >
+          Filtros y ordenamiento
 
-                <OrdenTareas
-                    criterio={criterioOrden}
-                    preferencia={preferenciaOrden}
-                    onCriterioChange={setCriterioOrden}
-                    onPreferenciaChange={setPreferenciaOrden}
-                />
+          <span aria-hidden="true">
+              {controlesAbiertos ? "−" : "+"}
+          </span>
+      </button>
+
+      <div
+          id="task-controls"
+          className={`dashboard-toolbar__controls ${
+              controlesAbiertos
+                  ? "dashboard-toolbar__controls--open"
+                  : ""
+          }`}
+      >
+          <FiltrosTareas
+              busqueda={busqueda}
+              prioridad={prioridad}
+              estado={estado}
+              onBusquedaChange={setBusqueda}
+              onPrioridadChange={setPrioridad}
+              onEstadoChange={setEstado}
+          />
+
+          <OrdenTareas
+              criterio={criterioOrden}
+              preferencia={preferenciaOrden}
+              onCriterioChange={setCriterioOrden}
+              onPreferenciaChange={setPreferenciaOrden}
+          />
+            </div>
+        </div>
             </section>
             <section className="dashboard-content">
             

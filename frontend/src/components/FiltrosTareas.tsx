@@ -1,6 +1,5 @@
 import type { FiltroEstado, Prioridad } from "../types/Tarea"
 import "../styles/components/FiltrosTareas.css"
-
 interface FiltrosTareasProps {
     busqueda: string
     prioridad: Prioridad | ""
@@ -18,11 +17,10 @@ function FiltrosTareas({
     onPrioridadChange,
     onEstadoChange,
 }: FiltrosTareasProps) {
-    return (
-        <details className="task-filters-panel" open>
-          <summary>Buscar y filtrar</summary>
-
-            <div className="task-filters">
+    
+     return (
+      <div className="task-filters" aria-label="Filtros de tareas">
+         
                 <div className="task-filters__field">
                     <label htmlFor="taskSearch">Buscar:
                     </label>
@@ -70,7 +68,6 @@ function FiltrosTareas({
                     </select>
                 </div>
             </div>
-        </details>
     )
 }
 
