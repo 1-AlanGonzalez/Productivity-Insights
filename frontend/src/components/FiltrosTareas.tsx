@@ -1,13 +1,13 @@
-import type { Estado, Prioridad } from "../types/Tarea"
+import type { FiltroEstado, Prioridad } from "../types/Tarea"
 import "../styles/components/FiltrosTareas.css"
 
 interface FiltrosTareasProps {
     busqueda: string
     prioridad: Prioridad | ""
-    estado: Estado | ""
+    estado: FiltroEstado
     onBusquedaChange: (valor: string) => void
     onPrioridadChange: (valor: Prioridad | "") => void
-    onEstadoChange: (valor: Estado | "") => void
+    onEstadoChange: (valor: FiltroEstado) => void
 }
 
 function FiltrosTareas({
@@ -62,15 +62,11 @@ function FiltrosTareas({
             <select
                 id="statusFilter"
                 value={estado}
-                onChange={(event) =>
-                    onEstadoChange(
-                        event.target.value as Estado | ""
-                    )
-                }
-            >
+                onChange={(event) => onEstadoChange(event.target.value as FiltroEstado)}>
                 <option value="">Todos</option>
                 <option value="PENDIENTE">Pendientes</option>
                 <option value="COMPLETADA">Completadas</option>
+                <option value="VENCIDA">Vencidas</option>
             </select>
         </section>
     )

@@ -6,7 +6,8 @@ import FiltrosTareas from "../components/FiltrosTareas"
 import OrdenTareas from "../components/OrdenTareas"
 import { cambiarEstadoTarea, eliminarTarea, obtenerTareas } from "../services/tareaService"
 import "../styles/pages/DashboardPage.css"
-import type { Estado, Prioridad, Tarea } from "../types/Tarea"
+import type { FiltroEstado, Prioridad, Tarea } from "../types/Tarea"
+import { estaVencida } from "../utils/estadoTarea"
 import {
     ordenarTareas,
     type CriterioOrden,
@@ -21,7 +22,7 @@ function DashboardPage() {
 
     const [busqueda, setBusqueda] = useState("")
     const [prioridad, setPrioridad] = useState<Prioridad | "">("")
-    const [estado, setEstado] = useState<Estado | "">("")
+    const [estado, setEstado] = useState<FiltroEstado>("")
     const [criterioOrden, setCriterioOrden] = useState<CriterioOrden>("FECHA")
     const [preferenciaOrden, setPreferenciaOrden] = useState<PreferenciaOrden>("PROXIMA")
 
@@ -46,7 +47,7 @@ function DashboardPage() {
             tarea.titulo.toLowerCase().includes(textoBuscado) ||
             (tarea.descripcion ?? "").toLowerCase().includes(textoBuscado)
         const coincidePrioridad = prioridad === "" || tarea.prioridad === prioridad
-        const coincideEstado = estado === "" || tarea.estado === estado
+        const coincideEstado = estado === "" || (estado === "VENCIDA" ? estaVencida(tarea) : tarea.estado === estado)
 
         return coincideBusqueda && coincidePrioridad && coincideEstado
     })
