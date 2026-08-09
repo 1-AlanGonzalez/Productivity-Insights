@@ -1,9 +1,12 @@
 .weekly-calendar {
   min-width: 0;
   padding: 1.25rem;
-  border: 0;
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-large);
+  background: var(--glass-panel);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .weekly-calendar__header {
@@ -48,34 +51,44 @@
   min-width: 38px;
   min-height: 38px;
   padding: 0.45rem 0.7rem;
-  border: 0;
-  background: var(--surface-raised);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  background: var(--glass-field);
   color: var(--text);
   font-weight: 700;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    transform 160ms ease;
 }
 
 .weekly-calendar__navigation button:hover {
-  background: #242424;
+  border-color: var(--glass-border-hover);
+  background: rgba(255, 255, 255, 0.09);
   color: var(--accent-light);
+  transform: translateY(-1px);
 }
 
 .weekly-calendar__scroll {
-  overflow-x: auto;
+  overflow-x: visible;
   padding-bottom: 0.5rem;
 }
 
 .weekly-calendar__grid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(165px, 1fr));
-  min-width: 1155px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  min-width: 0;
   border: 0;
   overflow: hidden;
+  gap: 0.5rem;
 }
 
 .week-day {
+  min-width: 0;
   min-height: 420px;
-  border-right: 0;
-  background: var(--surface-soft);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .week-day:last-child {
@@ -128,14 +141,26 @@
 
 .week-task {
   padding: 0.8rem;
-  border: 0;
-  background: var(--surface-raised);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(19, 19, 28, 0.52);
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
 }
-
+.week-task:hover {
+    border-color: var(--glass-border-hover);
+    background: rgba(25, 25, 37, 0.66);
+    transform: translateY(-2px);
+  }
 .week-task--completed {
-  background: #0d1713;
-  opacity: 0.82;
+  border-color: rgba(99, 214, 158, 0.18);
+  background: rgba(20, 65, 47, 0.32);
+  opacity: 0.86;
 }
 
 .week-task--completed h3 {
@@ -165,7 +190,7 @@
 
 .week-task__priority {
   padding: 0.2rem 0.4rem;
-  border-radius: 0;
+  border-radius: 999px;
 }
 
 .week-task__priority--alta {
@@ -204,7 +229,10 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
-
+.week-task h3,
+  .week-task > p {
+    overflow-wrap: anywhere;
+  }
 .week-task__check {
   display: flex;
   align-items: center;
@@ -234,22 +262,18 @@
 }
 
 .week-task__actions button {
-  padding: 0.38rem;
-  border: 0;
-  background: transparent;
+  min-height: 36px;
+  padding: 0.45rem;
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
   color: var(--muted);
   font-size: 0.65rem;
   font-weight: 750;
-}
-
-.week-task__actions button:hover {
-  background: #242424;
-  color: var(--text);
-}
-
-.week-task__actions .week-task__delete:hover {
-  background: #241313;
-  color: var(--danger-light);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
 .undated-tasks {
@@ -299,16 +323,19 @@
 }
 
 .week-task--overdue {
-  border-left: 3px solid var(--danger);
-  background: #1a0e0e;
-}
+    border: 1px solid rgba(255, 129, 146, 0.22);
+    border-left: 3px solid var(--danger);
+    background: rgba(80, 20, 31, 0.38);
+  }
 
 .week-task__overdue-label {
   display: inline-block;
   margin-top: 0.45rem;
   padding: 0.2rem 0.4rem;
-  background: var(--danger);
-  color: #fff;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 129, 146, 0.25);
+  background: rgba(185, 76, 93, 0.32);
+  color: var(--danger-light);
   font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -328,5 +355,30 @@
 
     .week-day {
       min-height: 0;
+    }
+  }
+
+
+/* BOTONES EDITAR Y ELIMINAR */
+
+  .week-task__actions .week-task__edit:hover {
+    border-color: var(--glass-border-hover);
+    background: rgba(255, 255, 255, 0.09);
+    color: var(--text);
+  }
+
+  .week-task__actions .week-task__delete {
+    color: var(--danger-light);
+  }
+
+  .week-task__actions .week-task__delete:hover {
+    border-color: rgba(255, 129, 146, 0.3);
+    background: rgba(120, 30, 45, 0.25);
+    color: #ff9cab;
+  }
+
+  @media (max-width: 620px) {
+    .week-task__actions button {
+      min-height: 44px;
     }
   }

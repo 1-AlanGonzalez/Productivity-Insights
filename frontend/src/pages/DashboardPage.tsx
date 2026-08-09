@@ -19,7 +19,7 @@ function DashboardPage() {
     const [cargando, setCargando] = useState(true)
     const [error, setError] = useState("")
     const [tareaEditando, setTareaEditando] = useState<Tarea | null>(null)
-
+    const [creandoTarea, setCreandoTarea] = useState(false)
     const [busqueda, setBusqueda] = useState("")
     const [prioridad, setPrioridad] = useState<Prioridad | "">("")
     const [estado, setEstado] = useState<FiltroEstado>("")
@@ -40,6 +40,27 @@ function DashboardPage() {
 
         cargarTareas()
     }, [])
+
+     useEffect(() => {
+      if (!tareaEditando && !creandoTarea) return
+
+      const overflowAnterior = document.body.style.overflow
+
+      function cerrarConEscape(event: KeyboardEvent) {
+          if (event.key === "Escape") {
+              setTareaEditando(null)
+              setCreandoTarea(false)
+          }
+      }
+
+      document.body.style.overflow = "hidden"
+      document.addEventListener("keydown", cerrarConEscape)
+
+      return () => {
+          document.body.style.overflow = overflowAnterior
+          document.removeEventListener("keydown", cerrarConEscape)
+      }
+  }, [tareaEditando, creandoTarea])
 
     const tareasFiltradas = tareas.filter((tarea) => {
         const textoBuscado = busqueda.trim().toLowerCase()
@@ -118,69 +139,109 @@ function DashboardPage() {
             </header>
 
             <div className="dashboard-layout">
-                <aside className="dashboard-sidebar">
-                    <div className="dashboard-sidebar__heading">
-                        <span>Vista semanal</span>
-                        <h2>Filtros</h2>
-                        <p>Ajustá las tareas que querés ver en el calendario.</p>
+                <section
+                className="dashboard-toolbar"
+                aria-label="Controles de tareas">
+                <button
+                    className="dashboard-sidebar__create-task"
+                    type="button"
+                    onClick={() => setCreandoTarea(true)}
+                >
+                    <span aria-hidden="true">＋</span>
+                    Nueva tarea
+                </button>
+
+                <FiltrosTareas
+                    busqueda={busqueda}
+                    prioridad={prioridad}
+                    estado={estado}
+                    onBusquedaChange={setBusqueda}
+                    onPrioridadChange={setPrioridad}
+                    onEstadoChange={setEstado}
+                />
+
+                <OrdenTareas
+                    criterio={criterioOrden}
+                    preferencia={preferenciaOrden}
+                    onCriterioChange={setCriterioOrden}
+                    onPreferenciaChange={setPreferenciaOrden}
+                />
+            </section>
+            <section className="dashboard-content">
+            
+            {creandoTarea && (
+                <div
+                    className="task-modal-overlay"
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            setCreandoTarea(false)
+                        }
+                    }}
+                >
+                    <div
+                        className="task-modal-dialog"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="create-task-title"
+                    >
+                        <CrearTareaForm
+                            onCancelar={() => setCreandoTarea(false)}
+                            onTareaCreada={(nuevaTarea) => {
+                                setTareas((tareasActuales) => [
+                                    ...tareasActuales,
+                                    nuevaTarea,
+                                ])
+                                setCreandoTarea(false)
+                            }}
+                        />
                     </div>
-
-                    <FiltrosTareas
-                        busqueda={busqueda}
-                        prioridad={prioridad}
-                        estado={estado}
-                        onBusquedaChange={setBusqueda}
-                        onPrioridadChange={setPrioridad}
-                        onEstadoChange={setEstado}
-                    />
-
-                    <OrdenTareas
-                        criterio={criterioOrden}
-                        preferencia={preferenciaOrden}
-                        onCriterioChange={setCriterioOrden}
-                        onPreferenciaChange={setPreferenciaOrden}
-                    />
-                </aside>
-
-                <section className="dashboard-content">
-                    
-
-                    {tareaEditando && (
+                </div>
+            )}
+            {tareaEditando && (
+                <div
+                    className="task-modal-overlay"
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) {
+                            setTareaEditando(null)
+                        }
+                    }}
+                >
+                    <div
+                        className="task-modal-dialog"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="edit-task-title"
+                    >
                         <EditarTareaForm
                             key={tareaEditando.id}
                             tarea={tareaEditando}
                             onCancelar={() => setTareaEditando(null)}
                             onActualizada={handleTareaActualizada}
                         />
-                    )}
+                    </div>
+                </div>
+            )}
 
-                    {cargando && <p className="dashboard-message">Cargando tareas...</p>}
-                    {error && <p className="dashboard-message dashboard-message--error" role="alert">{error}</p>}
-                    {!cargando && !error && tareas.length === 0 && (
-                        <p className="dashboard-message">Todavía no hay tareas. Creá la primera para comenzar.</p>
-                    )}
-                    {!cargando && !error && tareas.length > 0 && tareasFiltradas.length === 0 && (
-                        <p className="dashboard-message">No hay tareas que coincidan con los filtros.</p>
-                    )}
-                    
-                    {!cargando && !error && (
-                    <>
-                        <EstadisticaTarea tareas={tareas} />
+            {cargando && <p className="dashboard-message">Cargando tareas...</p>}
+            {error && <p className="dashboard-message dashboard-message--error" role="alert">{error}</p>}
+            {!cargando && !error && tareas.length === 0 && (
+                <p className="dashboard-message">Todavía no hay tareas. Creá la primera para comenzar.</p>
+            )}
+            {!cargando && !error && tareas.length > 0 && tareasFiltradas.length === 0 && (
+                <p className="dashboard-message">No hay tareas que coincidan con los filtros.</p>
+            )}
+            
+            {!cargando && !error && (
+            <>
+                <EstadisticaTarea tareas={tareas} />
 
-                        <CalendarioSemanal
-                            tareas={tareasOrdenadas}
-                            onCambiarEstado={handleCambiarEstado}
-                            onEditar={setTareaEditando}
-                            onEliminar={handleEliminar}
-                        />
-                    </>
-                )}
-                    <CrearTareaForm
-                        onTareaCreada={(nuevaTarea) =>
-                            setTareas((tareasActuales) => [...tareasActuales, nuevaTarea])
-                        }
-                    />
-                </section>
+                <CalendarioSemanal
+                    tareas={tareasOrdenadas}
+                    onCambiarEstado={handleCambiarEstado}
+                    onEditar={setTareaEditando}
+                    onEliminar={handleEliminar}
+                /></>)}
+            </section>
             </div>
             
         </main>

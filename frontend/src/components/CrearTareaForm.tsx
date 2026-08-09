@@ -1,15 +1,16 @@
 import { useState, type FormEvent } from "react"
 import { Tarea } from "../types/Tarea";
 import { crearTarea } from "../services/tareaService";
-import {toast, Toaster} from "sonner";
+import { toast } from "sonner"
 import "../styles/components/TareaForm.css";
 
 
 type CrearTareaFormProps = {
-    onTareaCreada: (tarea: Tarea) => void;
+    onTareaCreada: (tarea: Tarea) => void
+    onCancelar: () => void
 }
 
-function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
+function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
 
     const tareaInicial: Partial<Tarea> = {
         titulo: "",
@@ -66,10 +67,10 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
     }
 
 
-    const handleSubmit = async (
-        event: FormEvent<HTMLFormElement>,
-    ) => {
+    const handleSubmit = async ( event: FormEvent<HTMLFormElement>,) => {
         event.preventDefault()
+
+        if (!validarFormulario()) return
 
         setCreando(true)
         setError("")
@@ -97,7 +98,9 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
     }
 
     return(
-        <form className="task-form" onSubmit={handleSubmit}><h2>Nueva tarea</h2><label htmlFor="tarea">Nombre de la tarea:</label>
+        <form className="task-form" onSubmit={handleSubmit}>
+             <h2 id="create-task-title">Nueva tarea</h2>
+            <label htmlFor="tarea">Nombre de la tarea:</label>
             <input type="text" 
                 id="tarea" 
                 name="titulo"
@@ -105,6 +108,7 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
                 value={tarea.titulo}
                 onChange={handleChange}
                 required
+                autoFocus
                 maxLength={100}
             />
             {errores.titulo && <p role="alert">{errores.titulo}</p>}
@@ -147,9 +151,24 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
                 onChange={handleChange}
             />
             {error && <p role="alert">{error}</p>}
-            <button className="task-form__submit" type="submit" disabled={creando}>
+             <div className="task-form__actions">
+            <button
+                className="task-form__submit"
+                type="submit"
+                disabled={creando}
+            >
                 {creando ? "Agregando..." : "Agregar tarea"}
             </button>
+
+            <button
+                className="task-form__cancel"
+                type="button"
+                onClick={onCancelar}
+                disabled={creando}
+            >
+                Cancelar
+            </button>
+        </div>
     
     </form>
     )

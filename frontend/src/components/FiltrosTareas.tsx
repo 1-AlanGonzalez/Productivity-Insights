@@ -19,56 +19,58 @@ function FiltrosTareas({
     onEstadoChange,
 }: FiltrosTareasProps) {
     return (
-        <section className="task-filters">
-            <h2>Buscar y filtrar</h2>
+        <details className="task-filters-panel" open>
+          <summary>Buscar y filtrar</summary>
 
-            <label htmlFor="taskSearch">
-                Buscar:
-            </label>
+            <div className="task-filters">
+                <div className="task-filters__field">
+                    <label htmlFor="taskSearch">Buscar:
+                    </label>
 
-            <input
-                id="taskSearch"
-                type="search"
-                value={busqueda}
-                placeholder="Título o descripción"
-                onChange={(event) =>
-                    onBusquedaChange(event.target.value)
-                }
-            />
+                    <input
+                        id="taskSearch"
+                        type="search"
+                        value={busqueda}
+                        placeholder="Título o descripción"
+                        onChange={(event) =>
+                            onBusquedaChange(event.target.value)
+                        }
+                    />
+                </div>
+                <div className="task-filters__field">
+                    <label htmlFor="priorityFilter">Prioridad:</label>
+                    <select
+                        id="priorityFilter"
+                        value={prioridad}
+                        onChange={(event) =>
+                            onPrioridadChange(
+                                event.target.value as Prioridad | ""
+                            )
+                        }
+                    >
+                        <option value="">Todas</option>
+                        <option value="ALTA">Alta</option>
+                        <option value="MEDIA">Media</option>
+                        <option value="BAJA">Baja</option>
+                    </select>
+                </div>
+                <div className="task-filters__field">
+                    <label htmlFor="statusFilter">
+                    Estado:
+                    </label>
 
-            <label htmlFor="priorityFilter">
-                Prioridad:
-            </label>
-
-            <select
-                id="priorityFilter"
-                value={prioridad}
-                onChange={(event) =>
-                    onPrioridadChange(
-                        event.target.value as Prioridad | ""
-                    )
-                }
-            >
-                <option value="">Todas</option>
-                <option value="ALTA">Alta</option>
-                <option value="MEDIA">Media</option>
-                <option value="BAJA">Baja</option>
-            </select>
-
-            <label htmlFor="statusFilter">
-                Estado:
-            </label>
-
-            <select
-                id="statusFilter"
-                value={estado}
-                onChange={(event) => onEstadoChange(event.target.value as FiltroEstado)}>
-                <option value="">Todos</option>
-                <option value="PENDIENTE">Pendientes</option>
-                <option value="COMPLETADA">Completadas</option>
-                <option value="VENCIDA">Vencidas</option>
-            </select>
-        </section>
+                    <select
+                        id="statusFilter"
+                        value={estado}
+                        onChange={(event) => onEstadoChange(event.target.value as FiltroEstado)}>
+                        <option value="">Todos</option>
+                        <option value="PENDIENTE">Pendientes</option>
+                        <option value="COMPLETADA">Completadas</option>
+                        <option value="VENCIDA">Vencidas</option>
+                    </select>
+                </div>
+            </div>
+        </details>
     )
 }
 

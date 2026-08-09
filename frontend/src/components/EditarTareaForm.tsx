@@ -44,7 +44,7 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
     }
     return (
         <form className="task-form task-form--edit" onSubmit={guardarCambios}>
-            <h2>Editar tarea</h2>
+            <h2 id="edit-task-title">Editar tarea</h2>
 
             <label htmlFor="editTaskName">
                 Nombre de la tarea:
@@ -54,6 +54,7 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
                 id="editTaskName"
                 type="text"
                 required
+                autoFocus
                 value={formulario.titulo}
                 maxLength={100}
                 onChange={(event) =>
