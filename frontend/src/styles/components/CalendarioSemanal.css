@@ -297,3 +297,20 @@
     flex-direction: column;
   }
 }
+
+.week-task--overdue {
+  border-left: 3px solid var(--danger);
+  background: #1a0e0e;
+}
+
+.week-task__overdue-label {
+  display: inline-block;
+  margin-top: 0.45rem;
+  padding: 0.2rem 0.4rem;
+  background: var(--danger);
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

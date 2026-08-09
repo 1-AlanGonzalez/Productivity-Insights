@@ -1,4 +1,5 @@
 import { Tarea } from "../types/Tarea";
+import { estaVencida } from "../utils/estadoTarea"
 
 interface TareaCardProps {
     tarea: Tarea;
@@ -14,15 +15,26 @@ function TareaCard({
     onEliminar,
     onCambiarEstado,
 }: TareaCardProps) {
+    
+    const tareaVencida = estaVencida(tarea)
 
     return (
             <article
-                className={`week-task ${
+                className={[
+                    "week-task",
                     tarea.estado === "COMPLETADA"
                         ? "week-task--completed"
-                        : ""}`}>
+                        : "",
+                    tareaVencida
+                        ? "week-task--overdue"
+                        : "",
+                ].filter(Boolean).join(" ")}>
                 <h3>{tarea.titulo}</h3>
-
+                {tareaVencida && (
+                    <span className="week-task__overdue-label">
+                        Vencida
+                    </span>
+                )}
                 {tarea.descripcion && <p>{tarea.descripcion}</p>}
 
                 <label className="week-task__check">
