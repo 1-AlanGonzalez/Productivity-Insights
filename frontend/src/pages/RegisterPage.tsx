@@ -1,6 +1,7 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, type FormEvent } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import "../styles/pages/AuthPage.css"
 
 function RegisterPage() {
     const navigate = useNavigate()
@@ -44,7 +45,10 @@ function RegisterPage() {
     
     }
 
-    const register = async () => {
+    const register = async (
+        event: FormEvent<HTMLFormElement>,
+    ) => {
+        event.preventDefault()
     if (!validarFormulario()) return
 
     setCargando(true)
@@ -74,42 +78,99 @@ function RegisterPage() {
         setCargando(false)
     }
 }
-    return (
-        <div>
-            <h1>Register</h1>
-            <label htmlFor="nombre">Username:</label>
-            <input
-                id="nombre"
-                type="text"
-                placeholder="Nombre"
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-            />
-            {errores.usuario && <p role="alert">{errores.usuario}</p>}
-            <label htmlFor="correo">Email:</label>
-            <input
-                id="correo"
-                type="email"
-                placeholder="Correo"
-                value={correo}
-                onChange={(e) => setCorreo(e.target.value)}
-            />
-            {errores.correo && <p role="alert">{errores.correo}</p>}
-            <label htmlFor="contrasena">Password:</label>
-            <input
-                id="contrasena"
-                type="password"
-                placeholder="Contrasena"
-                value={contrasena}
-                onChange={(e) => setContrasena(e.target.value)}
-            />
-            {errores.contrasena && <p role="alert">{errores.contrasena}</p>}
-            {error && <p role="alert">{error}</p>}
-            <button onClick={register} disabled={cargando}>
-                {cargando ? "Registrando..." : "Registrar"}
-            </button>
-        </div>
-    )
+     return (
+      <main className="auth-page">
+          <section
+              className="auth-window"
+              aria-labelledby="register-title"
+          >
+              <header className="auth-window__intro">
+                  <span className="auth-window__brand">
+                      Productivity Insights
+                  </span>
+                  <h1 id="register-title">Crear cuenta</h1>
+                  <p>Empezá a organizar tu trabajo en un solo lugar.</p>
+              </header>
+
+              <form className="auth-form" onSubmit={register}>
+                  <div className="auth-form__field">
+                      <label htmlFor="nombre">
+                          Nombre de usuario
+                      </label>
+                      <input
+                          id="nombre"
+                          type="text"
+                          placeholder="Tu nombre"
+                          value={nombre}
+                          onChange={(event) =>
+                              setNombre(event.target.value)
+                          }
+                          required
+                      />
+                      {errores.usuario && (
+                          <p className="auth-form__error" role="alert">
+                              {errores.usuario}
+                          </p>
+                      )}
+                  </div>
+
+                  <div className="auth-form__field">
+                      <label htmlFor="correo">Correo</label>
+                      <input
+                          id="correo"
+                          type="email"
+                          placeholder="nombre@correo.com"
+                          value={correo}
+                          onChange={(event) =>
+                              setCorreo(event.target.value)
+                          }
+                          required
+                      />
+                      {errores.correo && (
+                          <p className="auth-form__error" role="alert">
+                              {errores.correo}
+                          </p>
+                      )}
+                  </div>
+
+                  <div className="auth-form__field">
+                      <label htmlFor="contrasena">
+                          Contraseña
+                      </label>
+                      <input
+                          id="contrasena"
+                          type="password"
+                          placeholder="Mínimo 8 caracteres"
+                          value={contrasena}
+                          onChange={(event) =>
+                              setContrasena(event.target.value)
+                          }
+                          minLength={8}
+                          required
+                      />
+                      {errores.contrasena && (
+                          <p className="auth-form__error" role="alert">
+                              {errores.contrasena}
+                          </p>
+                      )}
+                  </div>
+
+                  <button
+                      className="auth-form__submit"
+                      type="submit"
+                      disabled={cargando}
+                  >
+                      {cargando ? "Registrando..." : "Crear cuenta"}
+                  </button>
+              </form>
+
+              <p className="auth-window__footer">
+                  ¿Ya tenés cuenta?{" "}
+                  <Link to="/login">Iniciá sesión</Link>
+              </p>
+          </section>
+      </main>
+  )
 }
 
 export default RegisterPage

@@ -1,8 +1,17 @@
 .task-order {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 0;
-}
+    display: grid;
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .task-order__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  @media (max-width: 560px) {
+    .task-order {
+      grid-template-columns: 1fr;
+    }
+  }

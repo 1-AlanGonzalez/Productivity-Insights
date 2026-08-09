@@ -43,63 +43,66 @@ function OrdenTareas({
 
     return (
         <div className="task-order">
-            <label htmlFor="criterioOrden">
-                Ordenar por:
-            </label>
+            <div className="task-order__field">
+                <label htmlFor="criterioOrden">
+                    Ordenar por:
+                </label>
 
-            <select
-                id="criterioOrden"
-                value={criterio}
-                onChange={handleCriterioChange}
-            >
-                <option value="FECHA">Fecha límite</option>
-                <option value="PRIORIDAD">Prioridad</option>
-                <option value="ESTADO">Estado</option>
-            </select>
+                <select
+                    id="criterioOrden"
+                    value={criterio}
+                    onChange={handleCriterioChange}
+                >
+                    <option value="FECHA">Fecha límite</option>
+                    <option value="PRIORIDAD">Prioridad</option>
+                    <option value="ESTADO">Estado</option>
+                </select>
+            </div>
+            <div className="task-order__field">
+                <label htmlFor="preferenciaOrden">
+                    Mostrar primero:
+                </label>
 
-            <label htmlFor="preferenciaOrden">
-                Mostrar primero:
-            </label>
+                <select
+                    id="preferenciaOrden"
+                    value={preferencia}
+                    onChange={(event) =>
+                        onPreferenciaChange(
+                            event.target.value as PreferenciaOrden,
+                        )
+                    }
+                >
+                    {criterio === "FECHA" && (
+                        <>
+                            <option value="PROXIMA">
+                                Fecha más próxima
+                            </option>
+                            <option value="LEJANA">
+                                Fecha más lejana
+                            </option>
+                        </>
+                    )}
 
-            <select
-                id="preferenciaOrden"
-                value={preferencia}
-                onChange={(event) =>
-                    onPreferenciaChange(
-                        event.target.value as PreferenciaOrden,
-                    )
-                }
-            >
-                {criterio === "FECHA" && (
-                    <>
-                        <option value="PROXIMA">
-                            Fecha más próxima
-                        </option>
-                        <option value="LEJANA">
-                            Fecha más lejana
-                        </option>
-                    </>
-                )}
+                    {criterio === "PRIORIDAD" && (
+                        <>
+                            <option value="ALTA">Alta</option>
+                            <option value="MEDIA">Media</option>
+                            <option value="BAJA">Baja</option>
+                        </>
+                    )}
 
-                {criterio === "PRIORIDAD" && (
-                    <>
-                        <option value="ALTA">Alta</option>
-                        <option value="MEDIA">Media</option>
-                        <option value="BAJA">Baja</option>
-                    </>
-                )}
-
-                {criterio === "ESTADO" && (
-                    <>
-                        <option value="PENDIENTE">
-                            Pendientes
-                        </option>
-                        <option value="COMPLETADA">
-                            Completadas
-                        </option>
-                    </>
-                )}
-            </select>
+                    {criterio === "ESTADO" && (
+                        <>
+                            <option value="PENDIENTE">
+                                Pendientes
+                            </option>
+                            <option value="COMPLETADA">
+                                Completadas
+                            </option>
+                        </>
+                    )}
+              </select>   
+            </div>
         </div>
     )
 }

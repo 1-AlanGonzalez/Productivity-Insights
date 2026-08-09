@@ -1,8 +1,9 @@
 // Pagina de login de la aplicacion
 
-import { FormEvent, useState } from 'react'
-import { useNavigate } from "react-router-dom"
+import { useState, type FormEvent } from "react"
+import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
+import "../styles/pages/AuthPage.css"
 
 function LoginPage() {
     const navigate = useNavigate()
@@ -28,36 +29,70 @@ function LoginPage() {
     }
 
 return (
-    <main>
-    <form onSubmit={handleSubmit}>
-        <h1>Iniciar sesión</h1>
+      <main className="auth-page">
+          <section
+              className="auth-window"
+              aria-labelledby="login-title"
+          >
+              <header className="auth-window__intro">
+                  <span className="auth-window__brand">
+                      Productivity Insights
+                  </span>
+                  <h1 id="login-title">Iniciar sesión</h1>
+                  <p>Organizá tus tareas y mantené el foco.</p>
+              </header>
 
-        <label htmlFor="correo">Correo</label>
-        <input
-            id="correo"
-            type="email"
-            value={correo}
-            onChange={(event) => setCorreo(event.target.value)}
-            required
-        />
+              <form className="auth-form" onSubmit={handleSubmit}>
+                  <div className="auth-form__field">
+                      <label htmlFor="correo">Correo</label>
+                      <input
+                          id="correo"
+                          type="email"
+                          value={correo}
+                          onChange={(event) =>
+                              setCorreo(event.target.value)
+                          }
+                          required
+                      />
+                  </div>
 
-        <label htmlFor="contrasena">Contraseña</label>
-        <input
-            id="contrasena"
-            type="password"
-            value={contrasena}
-            onChange={(event) => setContrasena(event.target.value)}
-            required
-        />
+                  <div className="auth-form__field">
+                      <label htmlFor="contrasena">
+                          Contraseña
+                      </label>
+                      <input
+                          id="contrasena"
+                          type="password"
+                          value={contrasena}
+                          onChange={(event) =>
+                              setContrasena(event.target.value)
+                          }
+                          required
+                      />
+                  </div>
 
-        {error && <p role="alert">{error}</p>}
+                  {error && (
+                      <p className="auth-form__error" role="alert">
+                          {error}
+                      </p>
+                  )}
 
-        <button type="submit" disabled={cargando}>
-            {cargando ? 'Ingresando...' : 'Ingresar'}
-        </button>
-    </form>
-    </main>
-)
+                  <button
+                      className="auth-form__submit"
+                      type="submit"
+                      disabled={cargando}
+                  >
+                      {cargando ? "Ingresando..." : "Ingresar"}
+                  </button>
+              </form>
+
+              <p className="auth-window__footer">
+                  ¿No tenés cuenta?{" "}
+                  <Link to="/register">Registrate</Link>
+              </p>
+          </section>
+      </main>
+  )
 }
 
 export default LoginPage

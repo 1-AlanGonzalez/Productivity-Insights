@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react"
 import { Tarea } from "../types/Tarea";
 import { crearTarea } from "../services/tareaService";
-import {toast, Toaster} from "sonner";
+import { toast } from "sonner"
 import "../styles/components/TareaForm.css";
 
 
 type CrearTareaFormProps = {
-    onTareaCreada: (tarea: Tarea) => void;
+    onTareaCreada: (tarea: Tarea) => void
+    onCancelar: () => void
 }
 
-function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
+function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
 
     const tareaInicial: Partial<Tarea> = {
         titulo: "",
@@ -66,11 +67,13 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
     }
 
 
-    const handleSubmit = async () => {
-        if(!validarFormulario()) return 
+    const handleSubmit = async ( event: FormEvent<HTMLFormElement>,) => {
+        event.preventDefault()
 
-        setCreando(true);
-        setError("");
+        if (!validarFormulario()) return
+
+        setCreando(true)
+        setError("")
 
         try {
             const tareaCreada = await crearTarea(tarea);
@@ -95,13 +98,18 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
     }
 
     return(
-        <div className="task-form"><h2>Nueva tarea</h2><label htmlFor="tarea">Nombre de la tarea:</label>
+        <form className="task-form" onSubmit={handleSubmit}>
+             <h2 id="create-task-title">Nueva tarea</h2>
+            <label htmlFor="tarea">Nombre de la tarea:</label>
             <input type="text" 
                 id="tarea" 
                 name="titulo"
                 placeholder="nombre de la tarea" 
                 value={tarea.titulo}
                 onChange={handleChange}
+                required
+                autoFocus
+                maxLength={100}
             />
             {errores.titulo && <p role="alert">{errores.titulo}</p>}
             <label htmlFor="tareaDescripcion">Descripción de la tarea:</label>
@@ -143,11 +151,26 @@ function CrearTareaForm({ onTareaCreada }: CrearTareaFormProps) {
                 onChange={handleChange}
             />
             {error && <p role="alert">{error}</p>}
-            <button className="task-form__submit" onClick={handleSubmit} disabled={creando}>
+             <div className="task-form__actions">
+            <button
+                className="task-form__submit"
+                type="submit"
+                disabled={creando}
+            >
                 {creando ? "Agregando..." : "Agregar tarea"}
             </button>
+
+            <button
+                className="task-form__cancel"
+                type="button"
+                onClick={onCancelar}
+                disabled={creando}
+            >
+                Cancelar
+            </button>
+        </div>
     
-    </div>
+    </form>
     )
 }
 

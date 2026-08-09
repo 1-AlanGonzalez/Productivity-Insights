@@ -6,7 +6,9 @@ import FiltrosTareas from "../components/FiltrosTareas"
 import OrdenTareas from "../components/OrdenTareas"
 import { cambiarEstadoTarea, eliminarTarea, obtenerTareas } from "../services/tareaService"
 import "../styles/pages/DashboardPage.css"
-import type { Estado, Prioridad, Tarea } from "../types/Tarea"
+import type { FiltroEstado, Prioridad, Tarea } from "../types/Tarea"
+import { estaVencida } from "../utils/estadoTarea"
+import TaskModal from "../components/TaskModal"
 import {
     ordenarTareas,
     type CriterioOrden,
@@ -18,13 +20,13 @@ function DashboardPage() {
     const [cargando, setCargando] = useState(true)
     const [error, setError] = useState("")
     const [tareaEditando, setTareaEditando] = useState<Tarea | null>(null)
-
+    const [creandoTarea, setCreandoTarea] = useState(false)
     const [busqueda, setBusqueda] = useState("")
     const [prioridad, setPrioridad] = useState<Prioridad | "">("")
-    const [estado, setEstado] = useState<Estado | "">("")
+    const [estado, setEstado] = useState<FiltroEstado>("")
     const [criterioOrden, setCriterioOrden] = useState<CriterioOrden>("FECHA")
     const [preferenciaOrden, setPreferenciaOrden] = useState<PreferenciaOrden>("PROXIMA")
-
+    const [controlesAbiertos, setControlesAbiertos] = useState(false)
     useEffect(() => {
         async function cargarTareas() {
             try {
@@ -40,13 +42,14 @@ function DashboardPage() {
         cargarTareas()
     }, [])
 
+
     const tareasFiltradas = tareas.filter((tarea) => {
         const textoBuscado = busqueda.trim().toLowerCase()
         const coincideBusqueda =
             tarea.titulo.toLowerCase().includes(textoBuscado) ||
             (tarea.descripcion ?? "").toLowerCase().includes(textoBuscado)
         const coincidePrioridad = prioridad === "" || tarea.prioridad === prioridad
-        const coincideEstado = estado === "" || tarea.estado === estado
+        const coincideEstado = estado === "" || (estado === "VENCIDA" ? estaVencida(tarea) : tarea.estado === estado)
 
         return coincideBusqueda && coincidePrioridad && coincideEstado
     })
@@ -117,69 +120,114 @@ function DashboardPage() {
             </header>
 
             <div className="dashboard-layout">
-                <aside className="dashboard-sidebar">
-                    <div className="dashboard-sidebar__heading">
-                        <span>Vista semanal</span>
-                        <h2>Filtros</h2>
-                        <p>Ajustá las tareas que querés ver en el calendario.</p>
-                    </div>
+                <section
+                className="dashboard-toolbar"
+                aria-label="Controles de tareas">
+                <button
+                    className="dashboard-sidebar__create-task"
+                    type="button"
+                    onClick={() => setCreandoTarea(true)}
+                >
+                    <span aria-hidden="true">＋</span>
+                    Nueva tarea
+                </button>
 
-                    <FiltrosTareas
-                        busqueda={busqueda}
-                        prioridad={prioridad}
-                        estado={estado}
-                        onBusquedaChange={setBusqueda}
-                        onPrioridadChange={setPrioridad}
-                        onEstadoChange={setEstado}
-                    />
+                 <div className="dashboard-toolbar__panel">
+      <button
+          type="button"
+          className="dashboard-toolbar__toggle"
+          aria-expanded={controlesAbiertos}
+          aria-controls="task-controls"
+          onClick={() =>
+              setControlesAbiertos((abiertos) => !abiertos)
+          }
+      >
+          Filtros y ordenamiento
 
-                    <OrdenTareas
-                        criterio={criterioOrden}
-                        preferencia={preferenciaOrden}
-                        onCriterioChange={setCriterioOrden}
-                        onPreferenciaChange={setPreferenciaOrden}
-                    />
-                </aside>
+          <span aria-hidden="true">
+              {controlesAbiertos ? "−" : "+"}
+          </span>
+      </button>
 
-                <section className="dashboard-content">
-                    
+      <div
+          id="task-controls"
+          className={`dashboard-toolbar__controls ${
+              controlesAbiertos
+                  ? "dashboard-toolbar__controls--open"
+                  : ""
+          }`}
+      >
+          <FiltrosTareas
+              busqueda={busqueda}
+              prioridad={prioridad}
+              estado={estado}
+              onBusquedaChange={setBusqueda}
+              onPrioridadChange={setPrioridad}
+              onEstadoChange={setEstado}
+          />
 
-                    {tareaEditando && (
-                        <EditarTareaForm
-                            key={tareaEditando.id}
-                            tarea={tareaEditando}
-                            onCancelar={() => setTareaEditando(null)}
-                            onActualizada={handleTareaActualizada}
-                        />
-                    )}
-
-                    {cargando && <p className="dashboard-message">Cargando tareas...</p>}
-                    {error && <p className="dashboard-message dashboard-message--error" role="alert">{error}</p>}
-                    {!cargando && !error && tareas.length === 0 && (
-                        <p className="dashboard-message">Todavía no hay tareas. Creá la primera para comenzar.</p>
-                    )}
-                    {!cargando && !error && tareas.length > 0 && tareasFiltradas.length === 0 && (
-                        <p className="dashboard-message">No hay tareas que coincidan con los filtros.</p>
-                    )}
-                    
-                    {!cargando && !error && (
-                    <>
-                        <EstadisticaTarea tareas={tareas} />
-
-                        <CalendarioSemanal
-                            tareas={tareasOrdenadas}
-                            onCambiarEstado={handleCambiarEstado}
-                            onEditar={setTareaEditando}
-                            onEliminar={handleEliminar}
-                        />
-                    </>
-                )}
+          <OrdenTareas
+              criterio={criterioOrden}
+              preferencia={preferenciaOrden}
+              onCriterioChange={setCriterioOrden}
+              onPreferenciaChange={setPreferenciaOrden}
+          />
+            </div>
+        </div>
+            </section>
+            <section className="dashboard-content">
+            
+             {creandoTarea && (
+                <TaskModal
+                    titleId="create-task-title"
+                    onCerrar={() => setCreandoTarea(false)}
+                >
                     <CrearTareaForm
-                        onTareaCreada={(nuevaTarea) =>
-                            setTareas((tareasActuales) => [...tareasActuales, nuevaTarea])
-                        }
+                        onCancelar={() => setCreandoTarea(false)}
+                        onTareaCreada={(nuevaTarea) => {
+                            setTareas((tareasActuales) => [
+                                ...tareasActuales,
+                                nuevaTarea,
+                            ])
+                            setCreandoTarea(false)
+                        }}
                     />
-                </section>
+                </TaskModal>
+            )}
+            {tareaEditando && (
+                <TaskModal
+                    titleId="edit-task-title"
+                    onCerrar={() => setTareaEditando(null)}
+                >
+                    <EditarTareaForm
+                        key={tareaEditando.id}
+                        tarea={tareaEditando}
+                        onCancelar={() => setTareaEditando(null)}
+                        onActualizada={handleTareaActualizada}
+                    />
+                </TaskModal>
+            )}
+
+            {cargando && <p className="dashboard-message">Cargando tareas...</p>}
+            {error && <p className="dashboard-message dashboard-message--error" role="alert">{error}</p>}
+            {!cargando && !error && tareas.length === 0 && (
+                <p className="dashboard-message">Todavía no hay tareas. Creá la primera para comenzar.</p>
+            )}
+            {!cargando && !error && tareas.length > 0 && tareasFiltradas.length === 0 && (
+                <p className="dashboard-message">No hay tareas que coincidan con los filtros.</p>
+            )}
+            
+            {!cargando && !error && (
+            <>
+                <EstadisticaTarea tareas={tareas} />
+
+                <CalendarioSemanal
+                    tareas={tareasOrdenadas}
+                    onCambiarEstado={handleCambiarEstado}
+                    onEditar={setTareaEditando}
+                    onEliminar={handleEliminar}
+                /></>)}
+            </section>
             </div>
             
         </main>

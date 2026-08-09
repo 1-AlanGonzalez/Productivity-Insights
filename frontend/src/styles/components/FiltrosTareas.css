@@ -27,9 +27,14 @@
   width: 100%;
   min-height: 40px;
   padding: 0.62rem 0.7rem;
-  border: 0;
-  background: var(--surface-soft);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: var(--glass-field);
   color: var(--text);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .task-filters input::placeholder,
@@ -44,5 +49,39 @@
 .task-form input:hover,
 .task-form select:hover,
 .task-form textarea:hover {
-  background: #1b1b1b;
+  border-color: var(--glass-border-hover);
+  background: rgba(255, 255, 255, 0.075);
 }
+.task-filters input:focus,
+  .task-filters select:focus,
+  .task-order select:focus,
+  .task-form input:focus,
+  .task-form select:focus,
+  .task-form textarea:focus {
+    border-color: rgba(184, 179, 255, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(112, 102, 240, 0.13);
+  }
+.task-filters__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  @media (max-width: 780px) {
+    .task-filters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .task-filters h2 {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .task-filters {
+      grid-template-columns: 1fr;
+    }
+  }

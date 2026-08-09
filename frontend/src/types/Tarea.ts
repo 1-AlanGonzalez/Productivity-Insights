@@ -20,3 +20,4 @@ export type TareaEditable = Pick<
     Tarea,
     "titulo" | "descripcion" | "prioridad" | "categoria" | "estado" | "fechaLimite"
 >
+export type FiltroEstado = Estado | "VENCIDA" | ""
