@@ -8,6 +8,7 @@ import { cambiarEstadoTarea, eliminarTarea, obtenerTareas } from "../services/ta
 import "../styles/pages/DashboardPage.css"
 import type { FiltroEstado, Prioridad, Tarea } from "../types/Tarea"
 import { estaVencida } from "../utils/estadoTarea"
+import TaskModal from "../components/TaskModal"
 import {
     ordenarTareas,
     type CriterioOrden,
@@ -41,26 +42,6 @@ function DashboardPage() {
         cargarTareas()
     }, [])
 
-     useEffect(() => {
-      if (!tareaEditando && !creandoTarea) return
-
-      const overflowAnterior = document.body.style.overflow
-
-      function cerrarConEscape(event: KeyboardEvent) {
-          if (event.key === "Escape") {
-              setTareaEditando(null)
-              setCreandoTarea(false)
-          }
-      }
-
-      document.body.style.overflow = "hidden"
-      document.addEventListener("keydown", cerrarConEscape)
-
-      return () => {
-          document.body.style.overflow = overflowAnterior
-          document.removeEventListener("keydown", cerrarConEscape)
-      }
-  }, [tareaEditando, creandoTarea])
 
     const tareasFiltradas = tareas.filter((tarea) => {
         const textoBuscado = busqueda.trim().toLowerCase()
@@ -169,57 +150,35 @@ function DashboardPage() {
             </section>
             <section className="dashboard-content">
             
-            {creandoTarea && (
-                <div
-                    className="task-modal-overlay"
-                    onMouseDown={(event) => {
-                        if (event.target === event.currentTarget) {
-                            setCreandoTarea(false)
-                        }
-                    }}
+             {creandoTarea && (
+                <TaskModal
+                    titleId="create-task-title"
+                    onCerrar={() => setCreandoTarea(false)}
                 >
-                    <div
-                        className="task-modal-dialog"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="create-task-title"
-                    >
-                        <CrearTareaForm
-                            onCancelar={() => setCreandoTarea(false)}
-                            onTareaCreada={(nuevaTarea) => {
-                                setTareas((tareasActuales) => [
-                                    ...tareasActuales,
-                                    nuevaTarea,
-                                ])
-                                setCreandoTarea(false)
-                            }}
-                        />
-                    </div>
-                </div>
+                    <CrearTareaForm
+                        onCancelar={() => setCreandoTarea(false)}
+                        onTareaCreada={(nuevaTarea) => {
+                            setTareas((tareasActuales) => [
+                                ...tareasActuales,
+                                nuevaTarea,
+                            ])
+                            setCreandoTarea(false)
+                        }}
+                    />
+                </TaskModal>
             )}
             {tareaEditando && (
-                <div
-                    className="task-modal-overlay"
-                    onMouseDown={(event) => {
-                        if (event.target === event.currentTarget) {
-                            setTareaEditando(null)
-                        }
-                    }}
+                <TaskModal
+                    titleId="edit-task-title"
+                    onCerrar={() => setTareaEditando(null)}
                 >
-                    <div
-                        className="task-modal-dialog"
-                        role="dialog"
-                        aria-modal="true"
-                        aria-labelledby="edit-task-title"
-                    >
-                        <EditarTareaForm
-                            key={tareaEditando.id}
-                            tarea={tareaEditando}
-                            onCancelar={() => setTareaEditando(null)}
-                            onActualizada={handleTareaActualizada}
-                        />
-                    </div>
-                </div>
+                    <EditarTareaForm
+                        key={tareaEditando.id}
+                        tarea={tareaEditando}
+                        onCancelar={() => setTareaEditando(null)}
+                        onActualizada={handleTareaActualizada}
+                    />
+                </TaskModal>
             )}
 
             {cargando && <p className="dashboard-message">Cargando tareas...</p>}
