@@ -17,7 +17,11 @@ function TareaCard({
 }: TareaCardProps) {
     
     const tareaVencida = estaVencida(tarea)
+    const nombrePrioridad = tarea.prioridad || "Sin prioridad"
 
+    const clasePrioridad = tarea.prioridad
+        ? tarea.prioridad.toLowerCase()
+        : "sin-prioridad"
     return (
             <article
                 className={[
@@ -29,6 +33,19 @@ function TareaCard({
                         ? "week-task--overdue"
                         : "",
                 ].filter(Boolean).join(" ")}>
+                    <div className="week-task__top">
+                        <span
+                            className={`week-task__priority week-task__priority--${clasePrioridad}`}
+                        >
+                            {nombrePrioridad}
+                        </span>
+
+                        {tarea.categoria && (
+                            <span className="week-task__category">
+                                {tarea.categoria}
+                            </span>
+                        )}
+                    </div>
                 <h3>{tarea.titulo}</h3>
                 {tareaVencida && (
                     <span className="week-task__overdue-label">
