@@ -1,4 +1,5 @@
 import type { Tarea } from "../types/Tarea";
+import { estaVencida } from "../utils/estadoTarea"
 
 interface EstadisticasTareasProps {
     tareas: Tarea[];
@@ -12,12 +13,7 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
 
     const totalCompletadas = tareas.filter((t) => t.estado === "COMPLETADA").length;
 
-    const hoy = new Date().toISOString().split("T")[0]; 
-    // Obtener la fecha actual en formato YYYY-MM-DD, toISOString() devuelve la fecha en formato UTC, por lo que se divide en "T" y se toma la primera parte para obtener solo la fecha.
-    // UTC es un estándar de tiempo que no depende de la zona horaria local, por lo que es útil para comparar fechas sin preocuparse por las diferencias de zona horaria.
-    // split(T)[0] toma la primera parte de la cadena resultante de toISOString(), que es la fecha en formato YYYY-MM-DD, y la asigna a la variable hoy.
-    
-    const totalVencidas = tareas.filter((t) => t.fechaLimite && t.fechaLimite < hoy && t.estado !== "COMPLETADA").length;
+    const totalVencidas = tareas.filter((tarea) => estaVencida(tarea), ).length
 
     return (
         <div>
