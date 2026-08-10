@@ -1,28 +1,48 @@
 // Archivo que sirve para manejar la autenticación de usuarios en el frontend
 
 export async function login(correo: string, contrasena: string) {
-const response = await fetch("/api/login", {
-    method: "POST",
-    credentials: "include",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-        correo,
-        contrasena,
-    }),
-})
+    const response = await fetch("/api/login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            correo,
+            contrasena,
+        }),
+    })
 
-if (!response.ok) {
-    throw new Error('No fue posible iniciar sesión')
+    if (!response.ok) {
+        throw new Error('No fue posible iniciar sesión')
+    }
+
+    return
 }
 
-return
+export async function registrarUsuario(nombre: string, correo: string, contrasena: string) {
+    const response = await fetch("/api/authRegister/register", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            nombre,
+            correo,
+            contrasena,
+        }),
+    })
+
+    if (!response.ok) {
+        throw new Error("No fue posible registrar el usuario")
+    }
+
+    return
 }
 
 export interface SessionUser {
-      correo: string
-  }
+    correo: string
+}
 
 export async function getCurrentUser(): Promise<SessionUser | null> {
     const response = await fetch("/api/me", {

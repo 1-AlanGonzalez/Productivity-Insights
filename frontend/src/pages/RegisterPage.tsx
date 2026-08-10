@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import "../styles/pages/AuthPage.css"
+import { registrarUsuario } from "../services/authService"
 
 function RegisterPage() {
     const navigate = useNavigate()
@@ -9,7 +10,6 @@ function RegisterPage() {
     const [correo, setCorreo] = useState("")
     const [contrasena, setContrasena] = useState("")
 
-    const [error, setError] = useState("")
     const [errores, setErrores] = useState({
         usuario: "",
         correo: "",
@@ -17,7 +17,7 @@ function RegisterPage() {
     })
     const [cargando, setCargando] = useState(false)
 
-    function validarFormulario(){
+    function validarFormulario() {
         const nuevosErrores = {
             usuario: "",
             correo: "",
@@ -40,137 +40,120 @@ function RegisterPage() {
 
         setErrores(nuevosErrores)
         
-        // Retorna true si no hay errores, false si hay errores
         return !Object.values(nuevosErrores).some((error) => error !== "")
-    
     }
 
-    const register = async (
-        event: FormEvent<HTMLFormElement>,
-    ) => {
+    const register = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-    if (!validarFormulario()) return
+        if (!validarFormulario()) return
 
-    setCargando(true)
-    try {
-        const response = await fetch("/api/authRegister/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                nombre,
-                correo,
-                contrasena,
-            }),
-        })
-
-        if (response.ok) {
+        setCargando(true)
+        try {
+            await registrarUsuario(nombre, correo, contrasena)
+            toast.success("Cuenta creada correctamente")
             navigate("/login", { replace: true })
-            return
+        } catch {
+            toast.error("No fue posible registrar el usuario")
+        } finally {
+            setCargando(false)
         }
-
-        const mensaje = await response.json()
-        toast.error(mensaje.message || "No fue posible registrar el usuario")
-    } catch {
-        toast.error("No fue posible conectar con el servidor")
-    } finally {
-        setCargando(false)
     }
-}
-     return (
-      <main className="auth-page">
-          <section
-              className="auth-window"
-              aria-labelledby="register-title"
-          >
-              <header className="auth-window__intro">
-                  <span className="auth-window__brand">
-                      Productivity Insights
-                  </span>
-                  <h1 id="register-title">Crear cuenta</h1>
-                  <p>Empezá a organizar tu trabajo en un solo lugar.</p>
-              </header>
 
-              <form className="auth-form" onSubmit={register}>
-                  <div className="auth-form__field">
-                      <label htmlFor="nombre">
-                          Nombre de usuario
-                      </label>
-                      <input
-                          id="nombre"
-                          type="text"
-                          placeholder="Tu nombre"
-                          value={nombre}
-                          onChange={(event) =>
-                              setNombre(event.target.value)
-                          }
-                          required
-                      />
-                      {errores.usuario && (
-                          <p className="auth-form__error" role="alert">
-                              {errores.usuario}
-                          </p>
-                      )}
-                  </div>
+    return (
+        <main className="auth-page">
+            <section
+                className="auth-window"
+                aria-labelledby="register-title"
+            >
+                <header className="auth-window__intro">
+                    <span className="auth-window__brand">
+                        Productivity Insights
+                    </span>
+                    <h1 id="register-title">Crear cuenta</h1>
+                    <p>Empezá a organizar tu trabajo en un solo lugar.</p>
+                </header>
 
-                  <div className="auth-form__field">
-                      <label htmlFor="correo">Correo</label>
-                      <input
-                          id="correo"
-                          type="email"
-                          placeholder="nombre@correo.com"
-                          value={correo}
-                          onChange={(event) =>
-                              setCorreo(event.target.value)
-                          }
-                          required
-                      />
-                      {errores.correo && (
-                          <p className="auth-form__error" role="alert">
-                              {errores.correo}
-                          </p>
-                      )}
-                  </div>
+                <form className="auth-form" onSubmit={register} noValidate>
+                    <div className="auth-form__field">
+                        <label htmlFor="nombre">
+                            Nombre de usuario
+                        </label>
+                        <input
+                            id="nombre"
+                            type="text"
+                            className={errores.usuario ? "input--error" : ""}
+                            placeholder="Tu nombre"
+                            value={nombre}
+                            onChange={(event) => {
+                                setNombre(event.target.value)
+                                if (errores.usuario) setErrores(prev => ({ ...prev, usuario: "" }))
+                            }}
+                        />
+                        {errores.usuario && (
+                            <span className="auth-form__field-error" role="alert">
+                                {errores.usuario}
+                            </span>
+                        )}
+                    </div>
 
-                  <div className="auth-form__field">
-                      <label htmlFor="contrasena">
-                          Contraseña
-                      </label>
-                      <input
-                          id="contrasena"
-                          type="password"
-                          placeholder="Mínimo 8 caracteres"
-                          value={contrasena}
-                          onChange={(event) =>
-                              setContrasena(event.target.value)
-                          }
-                          minLength={8}
-                          required
-                      />
-                      {errores.contrasena && (
-                          <p className="auth-form__error" role="alert">
-                              {errores.contrasena}
-                          </p>
-                      )}
-                  </div>
+                    <div className="auth-form__field">
+                        <label htmlFor="correo">Correo</label>
+                        <input
+                            id="correo"
+                            type="email"
+                            className={errores.correo ? "input--error" : ""}
+                            placeholder="nombre@correo.com"
+                            value={correo}
+                            onChange={(event) => {
+                                setCorreo(event.target.value)
+                                if (errores.correo) setErrores(prev => ({ ...prev, correo: "" }))
+                            }}
+                        />
+                        {errores.correo && (
+                            <span className="auth-form__field-error" role="alert">
+                                {errores.correo}
+                            </span>
+                        )}
+                    </div>
 
-                  <button
-                      className="auth-form__submit"
-                      type="submit"
-                      disabled={cargando}
-                  >
-                      {cargando ? "Registrando..." : "Crear cuenta"}
-                  </button>
-              </form>
+                    <div className="auth-form__field">
+                        <label htmlFor="contrasena">
+                            Contraseña
+                        </label>
+                        <input
+                            id="contrasena"
+                            type="password"
+                            className={errores.contrasena ? "input--error" : ""}
+                            placeholder="Mínimo 8 caracteres"
+                            value={contrasena}
+                            onChange={(event) => {
+                                setContrasena(event.target.value)
+                                if (errores.contrasena) setErrores(prev => ({ ...prev, contrasena: "" }))
+                            }}
+                        />
+                        {errores.contrasena && (
+                            <span className="auth-form__field-error" role="alert">
+                                {errores.contrasena}
+                            </span>
+                        )}
+                    </div>
 
-              <p className="auth-window__footer">
-                  ¿Ya tenés cuenta?{" "}
-                  <Link to="/login">Iniciá sesión</Link>
-              </p>
-          </section>
-      </main>
-  )
+                    <button
+                        className="auth-form__submit"
+                        type="submit"
+                        disabled={cargando}
+                    >
+                        {cargando ? "Registrando..." : "Crear cuenta"}
+                    </button>
+                </form>
+
+                <p className="auth-window__footer">
+                    ¿Ya tenés cuenta?{" "}
+                    <Link to="/login">Iniciá sesión</Link>
+                </p>
+            </section>
+        </main>
+    )
 }
 
 export default RegisterPage

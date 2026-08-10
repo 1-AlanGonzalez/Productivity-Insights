@@ -1,13 +1,12 @@
 import { Tarea, TareaEditable } from "../types/Tarea"
+import { manejarRespuestas } from "./api";
 
 export async function obtenerTareas(): Promise<Tarea[]> {
     const response = await fetch("/api/tarea", {
         credentials: "include",
     })
 
-    if (!response.ok) {
-        throw new Error("No fue posible obtener las tareas")
-    }
+    await manejarRespuestas(response)
 
     return response.json()
 }
@@ -22,9 +21,7 @@ export async function crearTarea(datos: Partial<Tarea>): Promise<Tarea> {
         body: JSON.stringify(datos)
     });
 
-    if (!response.ok) {
-        throw new Error("No fue posible crear la tarea");
-    }
+    await manejarRespuestas(response);
 
     return response.json();
 }
@@ -42,9 +39,7 @@ export async function actualizarTarea(
         body: JSON.stringify(datos),
     });
 
-    if (!response.ok) {
-        throw new Error("No fue posible actualizar la tarea");
-    }
+    await manejarRespuestas(response);
 
     return response.json();
 }
@@ -55,9 +50,7 @@ export async function eliminarTarea(id: number): Promise<void> {
         credentials: "include",
     });
 
-    if (!response.ok) {
-        throw new Error("No fue posible eliminar la tarea");
-    }
+    await manejarRespuestas(response);
 }
 
 export async function cambiarEstadoTarea(tarea: Tarea): Promise<Tarea> {

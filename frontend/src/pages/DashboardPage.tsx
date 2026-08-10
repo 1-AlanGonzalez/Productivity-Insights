@@ -27,13 +27,18 @@ function DashboardPage() {
     const [criterioOrden, setCriterioOrden] = useState<CriterioOrden>("FECHA")
     const [preferenciaOrden, setPreferenciaOrden] = useState<PreferenciaOrden>("PROXIMA")
     const [controlesAbiertos, setControlesAbiertos] = useState(false)
+    const [tareaEliminando, setTareaEliminando] = useState<{ id: number; titulo: string } | null>(null)
     useEffect(() => {
         async function cargarTareas() {
             try {
                 const datos = await obtenerTareas()
                 setTareas(datos)
-            } catch {
-                setError("No fue posible obtener las tareas")
+            } catch (errorActual) {
+                setError(
+                    errorActual instanceof Error
+                        ? errorActual.message
+                        : "No fue posible obtener las tareas"
+                )
             } finally {
                 setCargando(false)
             }
@@ -66,19 +71,28 @@ function DashboardPage() {
         ? 0
         : Math.round((tareasCompletadas / tareas.length) * 100)
 
-    async function handleEliminar(id: number, titulo: string) {
-        const confirmada = window.confirm(`¿Seguro que querés eliminar la tarea "${titulo}"?`)
-        if (!confirmada) return
+    function handleEliminar(id: number, titulo: string) {
+        setTareaEliminando({ id, titulo })
+    }
+
+    async function confirmarEliminacion() {
+        if (!tareaEliminando) return
 
         setError("")
 
         try {
-            await eliminarTarea(id)
+            await eliminarTarea(tareaEliminando.id)
             setTareas((tareasActuales) =>
-                tareasActuales.filter((tarea) => tarea.id !== id),
+                tareasActuales.filter((tarea) => tarea.id !== tareaEliminando.id)
             )
-        } catch {
-            setError("No fue posible eliminar la tarea")
+        } catch (errorActual) {
+            setError(
+                errorActual instanceof Error
+                    ? errorActual.message
+                    : "No fue posible eliminar la tarea"
+            )
+        } finally {
+            setTareaEliminando(null)
         }
     }
 
@@ -94,8 +108,12 @@ function DashboardPage() {
                         : tareaActual,
                 ),
             )
-        } catch {
-            setError("No fue posible cambiar el estado de la tarea")
+        } catch (errorActual) {
+            setError(
+                errorActual instanceof Error
+                    ? errorActual.message
+                    : "No fue posible cambiar el estado de la tarea"
+            )
         }
     }
 
@@ -207,6 +225,39 @@ function DashboardPage() {
                     />
                 </TaskModal>
             )}
+
+            {tareaEliminando && (
+    <TaskModal
+        titleId="delete-task-title"
+        onCerrar={() => setTareaEliminando(null)}
+    >
+        <div className="modal-confirmacion modal-confirmacion--centrado">
+            <div className="modal-confirmacion__icono">
+                ⚠️
+            </div>
+            <h3 id="delete-task-title">¿Eliminar tarea?</h3>
+            <p>
+                ¿Seguro que querés eliminar <strong>"{tareaEliminando.titulo}"</strong>? Esta acción no se puede deshacer.
+            </p>
+            <div className="modal-confirmacion__acciones">
+                <button
+                    type="button"
+                    className="btn btn--secundario"
+                    onClick={() => setTareaEliminando(null)}
+                >
+                    Cancelar
+                </button>
+                <button
+                    type="button"
+                    className="btn btn--peligro"
+                    onClick={confirmarEliminacion}
+                >
+                    Eliminar
+                </button>
+            </div>
+        </div>
+    </TaskModal>
+)}
 
             {cargando && <p className="dashboard-message">Cargando tareas...</p>}
             {error && <p className="dashboard-message dashboard-message--error" role="alert">{error}</p>}

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react"
 import type { Tarea } from "../types/Tarea"
 import { actualizarTarea } from "../services/tareaService"
+import { toast } from "sonner"
 import "../styles/components/TareaForm.css"
 
 interface EditarTareaFormProps {
@@ -9,31 +10,39 @@ interface EditarTareaFormProps {
     onActualizada: (tarea: Tarea) => void
 }
 
-function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormProps) {
-    const [formulario, setFormulario] = useState<Tarea>(tarea)
+function EditarTareaForm({
+    tarea,
+    onCancelar,
+    onActualizada,
+}: EditarTareaFormProps) {
+    const [formulario, setFormulario] = useState(tarea)
     const [guardando, setGuardando] = useState(false)
-    const [error, setError] = useState("")
 
     async function guardarCambios(
-      event: FormEvent<HTMLFormElement>) {
+        event: FormEvent<HTMLFormElement>
+    ) {
         event.preventDefault()
 
         setGuardando(true)
-        setError("")
 
         try {
-            const tareaActualizada = await actualizarTarea(formulario.id, {
-                titulo: formulario.titulo,
-                descripcion: formulario.descripcion,
-                prioridad: formulario.prioridad,
-                categoria: formulario.categoria,
-                estado: formulario.estado,
-                fechaLimite: formulario.fechaLimite,
-            })
+            const tareaActualizada = await actualizarTarea(
+                formulario.id,
+                {
+                    titulo: formulario.titulo,
+                    descripcion: formulario.descripcion,
+                    prioridad: formulario.prioridad,
+                    categoria: formulario.categoria,
+                    estado: formulario.estado,
+                    fechaLimite: formulario.fechaLimite,
+                }
+            )
 
             onActualizada(tareaActualizada)
+
+            toast.success("Tarea actualizada correctamente")
         } catch (errorActual) {
-            setError(
+            toast.error(
                 errorActual instanceof Error
                     ? errorActual.message
                     : "No fue posible actualizar la tarea"
@@ -42,6 +51,7 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
             setGuardando(false)
         }
     }
+
     return (
         <form className="task-form task-form--edit" onSubmit={guardarCambios}>
             <h2 id="edit-task-title">Editar tarea</h2>
@@ -74,7 +84,13 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
                 value={formulario.descripcion ?? ""}
                 maxLength={500}
                 onChange={(event) =>
-                    setFormulario({...formulario, descripcion: event.target.value,})}/>
+                    setFormulario({
+                        ...formulario,
+                        descripcion: event.target.value,
+                    })
+                }
+            />
+
             <label htmlFor="editTaskPriority">
                 Prioridad:
             </label>
@@ -85,7 +101,8 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
                 onChange={(event) =>
                     setFormulario({
                         ...formulario,
-                        prioridad: event.target.value as Tarea["prioridad"],
+                        prioridad:
+                            event.target.value as Tarea["prioridad"],
                     })
                 }
             >
@@ -121,7 +138,8 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
                 onChange={(event) =>
                     setFormulario({
                         ...formulario,
-                        estado: event.target.value as Tarea["estado"],
+                        estado:
+                            event.target.value as Tarea["estado"],
                     })
                 }
             >
@@ -140,17 +158,28 @@ function EditarTareaForm({tarea, onCancelar, onActualizada,}: EditarTareaFormPro
                 onChange={(event) =>
                     setFormulario({
                         ...formulario,
-                        fechaLimite: event.target.value || null,
+                        fechaLimite:
+                            event.target.value || null,
                     })
                 }
             />
-            {error && <p role="alert">{error}</p>}
 
             <div className="task-form__actions">
-                <button type="submit" disabled={guardando}>
-                    {guardando ? "Guardando..." : "Guardar cambios"}
+                <button
+                    type="submit"
+                    disabled={guardando}
+                >
+                    {guardando
+                        ? "Guardando..."
+                        : "Guardar cambios"}
                 </button>
-                <button className="task-form__cancel" type="button" onClick={onCancelar} disabled={guardando}>
+
+                <button
+                    className="task-form__cancel"
+                    type="button"
+                    onClick={onCancelar}
+                    disabled={guardando}
+                >
                     Cancelar
                 </button>
             </div>
