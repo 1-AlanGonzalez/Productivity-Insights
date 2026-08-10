@@ -4,7 +4,6 @@ import { crearTarea } from "../services/tareaService";
 import { toast } from "sonner"
 import "../styles/components/TareaForm.css";
 
-
 type CrearTareaFormProps = {
     onTareaCreada: (tarea: Tarea) => void
     onCancelar: () => void
@@ -21,43 +20,46 @@ function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
     };
     const [tarea, setTarea] = useState(tareaInicial);
     const [error, setError] = useState("");
-    const [errores,setErrores] = useState({
+    const [errores, setErrores] = useState({
         titulo: "",
         descripcion: "",
         prioridad: "",
     })
     const [creando, setCreando] = useState(false);
 
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
+        
         setTarea(prev => ({
             ...prev,
             [name]: value
         }));
+
+        // Limpia el mensaje de error de este campo tan pronto como el usuario escribe
+        if (errores[name as keyof typeof errores]) {
+            setErrores(prev => ({
+                ...prev,
+                [name]: ""
+            }));
+        }
     };
 
-
-    function validarFormulario(){
-        const nuevosErrores: {
-            titulo: string;
-            descripcion: string;
-            prioridad: string
-        } = {
+    function validarFormulario() {
+        const nuevosErrores = {
             titulo: "",
             descripcion: "",
             prioridad: ""
         };
 
-        if(!tarea.titulo?.trim()){
+        if (!tarea.titulo?.trim()) {
             nuevosErrores.titulo = "El título es obligatorio";
         }
 
-        if(!tarea.descripcion?.trim()){
+        if (!tarea.descripcion?.trim()) {
             nuevosErrores.descripcion = "La descripción es obligatoria";
         }
 
-        if(!tarea.prioridad?.trim()){
+        if (!tarea.prioridad?.trim()) {
             nuevosErrores.prioridad = "La prioridad es obligatoria";
         }
 
@@ -66,8 +68,7 @@ function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
         return Object.values(nuevosErrores).every(error => error === "");
     }
 
-
-    const handleSubmit = async ( event: FormEvent<HTMLFormElement>,) => {
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
 
         if (!validarFormulario()) return
@@ -81,37 +82,35 @@ function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
             setTarea(tareaInicial);
             toast.success("Tarea creada exitosamente");
         } catch (errorActual) {
-            setError(
-                errorActual instanceof Error
-                    ? errorActual.message
-                    : "No fue posible crear la tarea"
-            );
+            const mensajeError = errorActual instanceof Error
+                ? errorActual.message
+                : "No fue posible crear la tarea";
 
-            toast.error(
-                    errorActual instanceof Error
-                        ? errorActual.message
-                        : "No fue posible crear la tarea"
-                );
+            setError(mensajeError);
+            toast.error(mensajeError);
         } finally {
             setCreando(false);
         }
     }
 
-    return(
-        <form className="task-form" onSubmit={handleSubmit}>
-             <h2 id="create-task-title">Nueva tarea</h2>
+    return (
+        /* noValidate deshabilita los globos de validación por defecto del navegador */
+        <form className="task-form" onSubmit={handleSubmit} noValidate>
+            <h2 id="create-task-title">Nueva tarea</h2>
+
             <label htmlFor="tarea">Nombre de la tarea:</label>
-            <input type="text" 
+            <input 
+                type="text" 
                 id="tarea" 
                 name="titulo"
                 placeholder="nombre de la tarea" 
                 value={tarea.titulo}
                 onChange={handleChange}
-                required
                 autoFocus
                 maxLength={100}
             />
-            {errores.titulo && <p role="alert">{errores.titulo}</p>}
+            {errores.titulo && <p className="task-form__error" role="alert">{errores.titulo}</p>}
+
             <label htmlFor="tareaDescripcion">Descripción de la tarea:</label>
             <textarea 
                 id="tareaDescripcion" 
@@ -120,7 +119,8 @@ function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
                 value={tarea.descripcion ?? ""}
                 onChange={handleChange}
             ></textarea>
-            {errores.descripcion && <p role="alert">{errores.descripcion}</p>}
+            {errores.descripcion && <p className="task-form__error" role="alert">{errores.descripcion}</p>}
+
             <label htmlFor="tareaPrioridad">Prioridad de la tarea:</label>
             <select 
                 id="tareaPrioridad"
@@ -133,15 +133,18 @@ function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
                 <option value="MEDIA">Media</option>
                 <option value="BAJA">Baja</option>
             </select>
-            {errores.prioridad && <p role="alert">{errores.prioridad}</p>}
+            {errores.prioridad && <p className="task-form__error" role="alert">{errores.prioridad}</p>}
+
             <label htmlFor="tareaCategoria">Categoría de la tarea:</label>
             <input
+                type="text"
                 id="tareaCategoria"
                 name="categoria"
                 placeholder="categoría de la tarea"
                 value={tarea.categoria ?? ""}
                 onChange={handleChange}
             />
+
             <label htmlFor="tareaFechaLimite">Fecha límite de la tarea:</label>
             <input
                 type="date"
@@ -150,27 +153,28 @@ function CrearTareaForm({ onTareaCreada, onCancelar }: CrearTareaFormProps) {
                 value={tarea.fechaLimite ?? ""}
                 onChange={handleChange}
             />
-            {error && <p role="alert">{error}</p>}
-             <div className="task-form__actions">
-            <button
-                className="task-form__submit"
-                type="submit"
-                disabled={creando}
-            >
-                {creando ? "Agregando..." : "Agregar tarea"}
-            </button>
 
-            <button
-                className="task-form__cancel"
-                type="button"
-                onClick={onCancelar}
-                disabled={creando}
-            >
-                Cancelar
-            </button>
-        </div>
-    
-    </form>
+            {error && <p className="task-form__error" role="alert">{error}</p>}
+
+            <div className="task-form__actions">
+                <button
+                    className="task-form__submit"
+                    type="submit"
+                    disabled={creando}
+                >
+                    {creando ? "Agregando..." : "Agregar tarea"}
+                </button>
+
+                <button
+                    className="task-form__cancel"
+                    type="button"
+                    onClick={onCancelar}
+                    disabled={creando}
+                >
+                    Cancelar
+                </button>
+            </div>
+        </form>
     )
 }
 

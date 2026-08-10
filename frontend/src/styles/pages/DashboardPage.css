@@ -408,3 +408,92 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Modal de confirmación centrado y estetico */
+.modal-confirmacion--centrado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem 0.5rem;
+  color: var(--text, #e5e5e5);
+}
+
+.modal-confirmacion__icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 0.25rem;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  font-size: 1.25rem;
+}
+
+.modal-confirmacion--centrado h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.modal-confirmacion--centrado p {
+  margin: 0;
+  color: var(--muted, #a3a3a3);
+  font-size: 0.925rem;
+  line-height: 1.5;
+  max-width: 320px;
+}
+
+.modal-confirmacion--centrado p strong {
+  color: #ffffff;
+}
+
+.modal-confirmacion--centrado .modal-confirmacion__acciones {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.modal-confirmacion--centrado .btn {
+  flex: 1; /* Hace que ambos botones tengan el mismo ancho simétrico */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.modal-confirmacion--centrado .btn--secundario {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: #e5e5e5;
+}
+
+.modal-confirmacion--centrado .btn--secundario:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.modal-confirmacion--centrado .btn--peligro {
+  border: none;
+  background-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.modal-confirmacion--centrado .btn--peligro:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+}

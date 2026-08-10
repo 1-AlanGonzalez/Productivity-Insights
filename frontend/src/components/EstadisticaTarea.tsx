@@ -1,66 +1,239 @@
 import { ResponsivePie } from "@nivo/pie"
-import type { Tarea } from "../types/Tarea";
+import { ResponsiveBar } from "@nivo/bar"
+import { ResponsiveLine } from "@nivo/line" // 1. Nuevo import
+import type { Tarea } from "../types/Tarea"
 import { estaVencida } from "../utils/estadoTarea"
+import {
+    configuracionGraficoEstado,
+    configuracionGraficoPrioridad,
+    configuracionGraficoMes,
+} from "../services/estadisticaGrafico"
+import "../styles/components/EstadisticaTarea.css"
 
 interface EstadisticasTareasProps {
-    tareas: Tarea[];
+    tareas: Tarea[]
 }
 
 function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
-    
-    const totalTareas = tareas.length;
 
-    const totalPendientes = tareas.filter((t) => t.estado === "PENDIENTE").length;
+    const totalTareas = tareas.length
 
-    const totalCompletadas = tareas.filter((t) => t.estado === "COMPLETADA").length;
+    const totalPendientes = tareas.filter(
+        (tarea) => tarea.estado === "PENDIENTE"
+    ).length
 
-    const totalVencidas = tareas.filter((tarea) => estaVencida(tarea), ).length
+    const totalCompletadas = tareas.filter(
+        (tarea) => tarea.estado === "COMPLETADA"
+    ).length
 
-    const datosGrafico = [
+    const totalVencidas = tareas.filter(
+        (tarea) => estaVencida(tarea)
+    ).length
+
+    const datosEstado = [
         { id: "Completadas", value: totalCompletadas },
         { id: "Pendientes", value: totalPendientes },
     ]
 
-    return (
-        <div>
-            <h2>Estadísticas</h2>
-            <p><strong>Total de tareas:</strong> {totalTareas}</p>
-            <p><strong>Tareas pendientes:</strong> {totalPendientes}</p>
-            <p><strong>Tareas completadas:</strong> {totalCompletadas}</p>
-            <p><strong>Tareas vencidas:</strong> {totalVencidas}</p>
+    const datosPrioridad = [
+        {
+            prioridad: "Alta",
+            cantidad: tareas.filter(
+                (tarea) => tarea.prioridad === "ALTA"
+            ).length,
+        },
+        {
+            prioridad: "Media",
+            cantidad: tareas.filter(
+                (tarea) => tarea.prioridad === "MEDIA"
+            ).length,
+        },
+        {
+            prioridad: "Baja",
+            cantidad: tareas.filter(
+                (tarea) => tarea.prioridad === "BAJA"
+            ).length,
+        },
+    ]
 
-            {totalTareas > 0 && (
-                <div style={{ height: 300 }}>
-                    <ResponsivePie
-                        data={datosGrafico}
-                        margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-                        innerRadius={0.5}
-                        padAngle={1}
-                        cornerRadius={4}
-                        activeOuterRadiusOffset={8}
-                        colors={{ scheme: "set2" }}
-                        borderWidth={1}
-                        borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
-                        arcLinkLabelsSkipAngle={10}
-                        arcLinkLabelsTextColor="#e5e5e5"
-                        arcLabelsSkipAngle={10}
-                        arcLabelsTextColor="#1a1a1a"
-                        legends={[
-                            {
-                                anchor: "bottom",
-                                direction: "row",
-                                translateY: 56,
-                                itemWidth: 100,
-                                itemHeight: 18,
-                                itemTextColor: "#e5e5e5",
-                                symbolShape: "circle",
-                            },
-                        ]}
-                    />
+    const tareasPorMes = tareas.reduce(
+        (acumulador, tarea) => {
+            if (!tarea.fechaLimite) {
+                return acumulador
+            }
+
+            const mes = tarea.fechaLimite.substring(0, 7)
+
+            acumulador[mes] = (acumulador[mes] || 0) + 1
+
+            return acumulador
+        },
+        {} as Record<string, number>
+    )
+
+    const nombresMeses: Record<string, string> = {
+        "01": "Enero",
+        "02": "Febrero",
+        "03": "Marzo",
+        "04": "Abril",
+        "05": "Mayo",
+        "06": "Junio",
+        "07": "Julio",
+        "08": "Agosto",
+        "09": "Septiembre",
+        "10": "Octubre",
+        "11": "Noviembre",
+        "12": "Diciembre",
+    }
+
+    // 2. Formateo de datos compatible con @nivo/line (estructura de series con 'x' e 'y')
+    const datosPorMesLine = [
+        {
+            id: "Tareas",
+            data: Object.entries(tareasPorMes).map(([mes, cantidad]) => ({
+                x: nombresMeses[mes.substring(5, 7)],
+                y: cantidad,
+            })),
+        },
+    ]
+
+    const hayDatosDeMeses = datosPorMesLine[0].data.length > 0
+
+    return (
+        <section className="estadisticas">
+
+            <div className="estadisticas__encabezado">
+                <p className="estadisticas__etiqueta">
+                    PRODUCTIVITY INSIGHTS
+                </p>
+
+                <h2>Resumen de tareas</h2>
+
+                <p className="estadisticas__descripcion">
+                    Consultá rápidamente el estado, la prioridad y la
+                    distribución de tus tareas.
+                </p>
+            </div>
+
+            <div className="estadisticas__resumen">
+
+                <div className="estadisticas__tarjeta">
+                    <span>Total de tareas</span>
+                    <strong>{totalTareas}</strong>
                 </div>
+
+                <div className="estadisticas__tarjeta">
+                    <span>Pendientes</span>
+                    <strong>{totalPendientes}</strong>
+                </div>
+
+                <div className="estadisticas__tarjeta">
+                    <span>Completadas</span>
+                    <strong>{totalCompletadas}</strong>
+                </div>
+
+                <div className="estadisticas__tarjeta">
+                    <span>Vencidas</span>
+                    <strong>{totalVencidas}</strong>
+                </div>
+
+            </div>
+
+            {totalTareas > 0 ? (
+
+                <div className="estadisticas__graficos">
+
+                    <article className="estadisticas__grafico">
+
+                        <div className="estadisticas__grafico-header">
+                            <h3>Estado de las tareas</h3>
+                            <p>
+                                Comparación entre tareas pendientes y
+                                completadas.
+                            </p>
+                        </div>
+
+                        <div className="estadisticas__grafico-contenido">
+                            <ResponsivePie
+                                data={datosEstado}
+                                {...configuracionGraficoEstado}
+                            />
+                        </div>
+
+                    </article>
+
+
+                    <article className="estadisticas__grafico">
+
+                        <div className="estadisticas__grafico-header">
+                            <h3>Tareas por prioridad</h3>
+                            <p>
+                                Distribución de tareas según su nivel de
+                                prioridad.
+                            </p>
+                        </div>
+
+                        <div className="estadisticas__grafico-contenido">
+                            <ResponsiveBar
+                                data={datosPrioridad}
+                                keys={["cantidad"]}
+                                indexBy="prioridad"
+                                {...configuracionGraficoPrioridad}
+                            />
+                        </div>
+
+                    </article>
+
+
+                    <article className="estadisticas__grafico estadisticas__grafico--amplio">
+
+                        <div className="estadisticas__grafico-header">
+                            <h3>Tareas por mes</h3>
+                            <p>
+                                Cantidad de tareas según el mes de su fecha
+                                límite.
+                            </p>
+                        </div>
+
+                        {hayDatosDeMeses ? (
+
+                            <div className="estadisticas__grafico-contenido">
+                                {/* 3. Uso del componente ResponsiveLine */}
+                                <ResponsiveLine
+                                    data={datosPorMesLine}
+                                    {...configuracionGraficoMes}
+                                />
+                            </div>
+
+                        ) : (
+
+                            <div className="estadisticas__sin-datos">
+                                <p>
+                                    No hay tareas con fecha límite para
+                                    mostrar.
+                                </p>
+                            </div>
+
+                        )}
+
+                    </article>
+
+                </div>
+
+            ) : (
+
+                <div className="estadisticas__vacio">
+                    <h3>Aún no tenés tareas</h3>
+                    <p>
+                        Creá tu primera tarea para comenzar a ver tus
+                        estadísticas.
+                    </p>
+                </div>
+
             )}
-        </div>
-    );
+
+        </section>
+    )
 }
 
 export default EstadisticaTarea
