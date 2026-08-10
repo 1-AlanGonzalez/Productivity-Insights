@@ -30,8 +30,12 @@ function DashboardPage() {
             try {
                 const datos = await obtenerTareas()
                 setTareas(datos)
-            } catch {
-                setError("No fue posible obtener las tareas")
+            } catch (errorActual) {
+                setError(
+                    errorActual instanceof Error
+                        ? errorActual.message
+                        : "No fue posible obtener las tareas"
+                )
             } finally {
                 setCargando(false)
             }
@@ -74,8 +78,12 @@ function DashboardPage() {
             setTareas((tareasActuales) =>
                 tareasActuales.filter((tarea) => tarea.id !== id),
             )
-        } catch {
-            setError("No fue posible eliminar la tarea")
+        } catch (errorActual) {
+            setError(
+                errorActual instanceof Error
+                    ? errorActual.message
+                    : "No fue posible eliminar la tarea"
+            )
         }
     }
 
@@ -91,8 +99,12 @@ function DashboardPage() {
                         : tareaActual,
                 ),
             )
-        } catch {
-            setError("No fue posible cambiar el estado de la tarea")
+        } catch (errorActual) {
+            setError(
+                errorActual instanceof Error
+                    ? errorActual.message
+                    : "No fue posible cambiar el estado de la tarea"
+            )
         }
     }
 

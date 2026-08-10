@@ -1,3 +1,4 @@
+import { ResponsivePie } from "@nivo/pie"
 import type { Tarea } from "../types/Tarea";
 
 interface EstadisticasTareasProps {
@@ -13,11 +14,13 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
     const totalCompletadas = tareas.filter((t) => t.estado === "COMPLETADA").length;
 
     const hoy = new Date().toISOString().split("T")[0]; 
-    // Obtener la fecha actual en formato YYYY-MM-DD, toISOString() devuelve la fecha en formato UTC, por lo que se divide en "T" y se toma la primera parte para obtener solo la fecha.
-    // UTC es un estándar de tiempo que no depende de la zona horaria local, por lo que es útil para comparar fechas sin preocuparse por las diferencias de zona horaria.
-    // split(T)[0] toma la primera parte de la cadena resultante de toISOString(), que es la fecha en formato YYYY-MM-DD, y la asigna a la variable hoy.
     
     const totalVencidas = tareas.filter((t) => t.fechaLimite && t.fechaLimite < hoy && t.estado !== "COMPLETADA").length;
+
+    const datosGrafico = [
+        { id: "Completadas", value: totalCompletadas },
+        { id: "Pendientes", value: totalPendientes },
+    ]
 
     return (
         <div>
@@ -26,6 +29,37 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
             <p><strong>Tareas pendientes:</strong> {totalPendientes}</p>
             <p><strong>Tareas completadas:</strong> {totalCompletadas}</p>
             <p><strong>Tareas vencidas:</strong> {totalVencidas}</p>
+
+            {totalTareas > 0 && (
+                <div style={{ height: 300 }}>
+                    <ResponsivePie
+                        data={datosGrafico}
+                        margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+                        innerRadius={0.5}
+                        padAngle={1}
+                        cornerRadius={4}
+                        activeOuterRadiusOffset={8}
+                        colors={{ scheme: "set2" }}
+                        borderWidth={1}
+                        borderColor={{ from: "color", modifiers: [["darker", 0.2]] }}
+                        arcLinkLabelsSkipAngle={10}
+                        arcLinkLabelsTextColor="#e5e5e5"
+                        arcLabelsSkipAngle={10}
+                        arcLabelsTextColor="#1a1a1a"
+                        legends={[
+                            {
+                                anchor: "bottom",
+                                direction: "row",
+                                translateY: 56,
+                                itemWidth: 100,
+                                itemHeight: 18,
+                                itemTextColor: "#e5e5e5",
+                                symbolShape: "circle",
+                            },
+                        ]}
+                    />
+                </div>
+            )}
         </div>
     );
 }
