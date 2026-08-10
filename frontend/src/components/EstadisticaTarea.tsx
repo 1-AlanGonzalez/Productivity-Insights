@@ -1,5 +1,6 @@
 import { ResponsivePie } from "@nivo/pie"
 import type { Tarea } from "../types/Tarea";
+import { estaVencida } from "../utils/estadoTarea"
 
 interface EstadisticasTareasProps {
     tareas: Tarea[];
@@ -13,9 +14,7 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
 
     const totalCompletadas = tareas.filter((t) => t.estado === "COMPLETADA").length;
 
-    const hoy = new Date().toISOString().split("T")[0]; 
-    
-    const totalVencidas = tareas.filter((t) => t.fechaLimite && t.fechaLimite < hoy && t.estado !== "COMPLETADA").length;
+    const totalVencidas = tareas.filter((tarea) => estaVencida(tarea), ).length
 
     const datosGrafico = [
         { id: "Completadas", value: totalCompletadas },

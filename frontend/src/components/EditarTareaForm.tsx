@@ -53,11 +53,8 @@ function EditarTareaForm({
     }
 
     return (
-        <form
-            className="task-form task-form--edit"
-            onSubmit={guardarCambios}
-        >
-            <h2>Editar tarea</h2>
+        <form className="task-form task-form--edit" onSubmit={guardarCambios}>
+            <h2 id="edit-task-title">Editar tarea</h2>
 
             <label htmlFor="editTaskName">
                 Nombre de la tarea:
@@ -67,6 +64,7 @@ function EditarTareaForm({
                 id="editTaskName"
                 type="text"
                 required
+                autoFocus
                 value={formulario.titulo}
                 maxLength={100}
                 onChange={(event) =>
