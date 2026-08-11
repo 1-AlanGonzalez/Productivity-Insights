@@ -1,18 +1,18 @@
 package com.gestor.ProductivityInsights.service.implementation;
+
 import com.gestor.ProductivityInsights.persistence.model.Usuario;
 import com.gestor.ProductivityInsights.persistence.repository.UsuarioRepository;
 import com.gestor.ProductivityInsights.presentation.dto.RegisterRequestDTO;
 import com.gestor.ProductivityInsights.service.exception.BusinessException;
 import com.gestor.ProductivityInsights.service.interfaces.IRegisterService;
-import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 public class RegisterService implements IRegisterService {
     
-    
-    private UsuarioRepository usuarioRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public RegisterService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
@@ -22,7 +22,7 @@ public class RegisterService implements IRegisterService {
     @Override
     public void register(RegisterRequestDTO registerRequestDTO) {
         if (registerRequestDTO == null) {
-          throw new BusinessException("Los datos son obligatorios");
+            throw new BusinessException("Los datos son obligatorios");
         }
 
         String username = registerRequestDTO.getNombre();
@@ -47,12 +47,13 @@ public class RegisterService implements IRegisterService {
             );
         }
 
+        // Validaciones con mensajes neutrales por seguridad
         if (usuarioRepository.existsByNombre(username)) {
-            throw new BusinessException("El nombre de usuario ya existe");
+            throw new BusinessException("El nombre de usuario no está disponible");
         }
 
         if (usuarioRepository.existsByCorreo(correo)) {
-            throw new BusinessException("El email ya existe");
+            throw new BusinessException("El correo no está disponible");
         }
 
         Usuario usuario = new Usuario();
@@ -60,7 +61,7 @@ public class RegisterService implements IRegisterService {
         usuario.setContrasena(passwordEncoder.encode(registerRequestDTO.getContrasena()));
         usuario.setCorreo(registerRequestDTO.getCorreo());
         usuarioRepository.save(usuario);
+        
         System.out.println("User registered with username: " + registerRequestDTO.getNombre());
     }
-
 }
