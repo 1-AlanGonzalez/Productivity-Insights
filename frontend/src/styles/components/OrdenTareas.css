@@ -1,17 +1,23 @@
 .task-order {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(140px, 1fr));
-    gap: 0.75rem;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
 
-  .task-order__field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.55rem;
-  }
+.task-order__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
 
-  @media (max-width: 560px) {
-    .task-order {
-      grid-template-columns: 1fr;
-    }
+@media (max-width: 780px) {
+  .task-order {
+    grid-template-columns: 1fr;
   }
+}

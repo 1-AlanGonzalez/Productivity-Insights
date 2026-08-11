@@ -190,8 +190,15 @@ function DashboardPage() {
               onCriterioChange={setCriterioOrden}
               onPreferenciaChange={setPreferenciaOrden}
           />
-            </div>
+          </div>
         </div>
+        <CalendarioSemanal
+                    tareas={tareasOrdenadas}
+                    onCambiarEstado={handleCambiarEstado}
+                    onEditar={setTareaEditando}
+                    onEliminar={handleEliminar}
+                />
+        
             </section>
             <section className="dashboard-content">
             
@@ -227,37 +234,37 @@ function DashboardPage() {
             )}
 
             {tareaEliminando && (
-    <TaskModal
-        titleId="delete-task-title"
-        onCerrar={() => setTareaEliminando(null)}
-    >
-        <div className="modal-confirmacion modal-confirmacion--centrado">
-            <div className="modal-confirmacion__icono">
-                ⚠️
-            </div>
-            <h3 id="delete-task-title">¿Eliminar tarea?</h3>
-            <p>
-                ¿Seguro que querés eliminar <strong>"{tareaEliminando.titulo}"</strong>? Esta acción no se puede deshacer.
-            </p>
-            <div className="modal-confirmacion__acciones">
-                <button
-                    type="button"
-                    className="btn btn--secundario"
-                    onClick={() => setTareaEliminando(null)}
+                <TaskModal
+                    titleId="delete-task-title"
+                    onCerrar={() => setTareaEliminando(null)}
                 >
-                    Cancelar
-                </button>
-                <button
-                    type="button"
-                    className="btn btn--peligro"
-                    onClick={confirmarEliminacion}
-                >
-                    Eliminar
-                </button>
-            </div>
-        </div>
-    </TaskModal>
-)}
+                    <div className="modal-confirmacion modal-confirmacion--centrado">
+                        <div className="modal-confirmacion__icono">
+                            ⚠️
+                        </div>
+                        <h3 id="delete-task-title">¿Eliminar tarea?</h3>
+                        <p>
+                            ¿Seguro que querés eliminar <strong>"{tareaEliminando.titulo}"</strong>? Esta acción no se puede deshacer.
+                        </p>
+                        <div className="modal-confirmacion__acciones">
+                            <button
+                                type="button"
+                                className="btn btn--secundario"
+                                onClick={() => setTareaEliminando(null)}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn--peligro"
+                                onClick={confirmarEliminacion}
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </TaskModal>
+            )}
 
             {cargando && <p className="dashboard-message">Cargando tareas...</p>}
             {error && <p className="dashboard-message dashboard-message--error" role="alert">{error}</p>}
@@ -272,15 +279,9 @@ function DashboardPage() {
             <>
                 <EstadisticaTarea tareas={tareas} />
 
-                <CalendarioSemanal
-                    tareas={tareasOrdenadas}
-                    onCambiarEstado={handleCambiarEstado}
-                    onEditar={setTareaEditando}
-                    onEliminar={handleEliminar}
-                /></>)}
+                </>)}
             </section>
             </div>
-            
         </main>
     )
 }

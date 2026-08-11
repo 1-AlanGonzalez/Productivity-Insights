@@ -67,16 +67,20 @@ function TareaCard({
                         className="week-task__edit"
                         type="button"
                         onClick={() => onEditar(tarea)}
+                        title="Editar tarea"
                     >
-                        Editar
+                        <span className="week-task__btn-icon" aria-hidden="true"></span>
+                        <span className="week-task__btn-text">Editar</span>
                     </button>
 
                     <button
                         className="week-task__delete"
                         type="button"
                         onClick={() => onEliminar(tarea.id, tarea.titulo)}
+                        title="Eliminar tarea"
                     >
-                        Eliminar
+                        <span className="week-task__btn-icon" aria-hidden="true"></span>
+                        <span className="week-task__btn-text">Eliminar</span>
                     </button>
                 </div>
             </article>
