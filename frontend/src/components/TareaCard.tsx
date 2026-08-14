@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { Tarea } from "../types/Tarea";
 import { estaVencida } from "../utils/estadoTarea"
 
@@ -15,13 +16,16 @@ function TareaCard({
     onEliminar,
     onCambiarEstado,
 }: TareaCardProps) {
-    
+
+    const [expandido, setExpandido] = useState(false)
+
     const tareaVencida = estaVencida(tarea)
     const nombrePrioridad = tarea.prioridad || "Sin prioridad"
 
     const clasePrioridad = tarea.prioridad
         ? tarea.prioridad.toLowerCase()
         : "sin-prioridad"
+
     return (
             <article
                 className={[
@@ -32,57 +36,91 @@ function TareaCard({
                     tareaVencida
                         ? "week-task--overdue"
                         : "",
-                ].filter(Boolean).join(" ")}>
-                    <div className="week-task__top">
-                        <span
-                            className={`week-task__priority week-task__priority--${clasePrioridad}`}
+                    !expandido
+                        ? "week-task--collapsed"
+                        : "",
+                ].filter(Boolean).join(" ")}
+                onClick={() => setExpandido((valorActual) => !valorActual)}
+                role="button"
+                tabIndex={0}
+                aria-expanded={expandido}
+                onKeyDown={(evento) => {
+                    if (evento.key === "Enter" || evento.key === " ") {
+                        evento.preventDefault()
+                        setExpandido((valorActual) => !valorActual)
+                    }
+                }}
+            >
+                <div className="week-task__collapsed-row">
+                    <div className="week-task__collapsed-row__top">
+                        <label
+                            className="week-task__check"
+                            onClick={(evento) => evento.stopPropagation()}
                         >
-                            {nombrePrioridad}
-                        </span>
+                            <input
+                                type="checkbox"
+                                checked={tarea.estado === "COMPLETADA"}
+                                onChange={() => onCambiarEstado(tarea)}/>
+                        </label>
 
-                        {tarea.categoria && (
-                            <span className="week-task__category">
-                                {tarea.categoria}
+                        <h3>{tarea.titulo}</h3>
+                    </div>
+
+                    <span
+                        className={`week-task__chevron ${expandido ? "week-task__chevron--open" : ""}`}
+                        aria-hidden="true"
+                    >
+                        ▾
+                    </span>
+                </div>
+
+                {expandido && (
+                    <div className="week-task__details" onClick={(evento) => evento.stopPropagation()}>
+                        <div className="week-task__top">
+                            <span
+                                className={`week-task__priority week-task__priority--${clasePrioridad}`}
+                            >
+                                {nombrePrioridad}
+                            </span>
+
+                            {tarea.categoria && (
+                                <span className="week-task__category">
+                                    {tarea.categoria}
+                                </span>
+                            )}
+                        </div>
+
+                        {tareaVencida && (
+                            <span className="week-task__overdue-label">
+                                Vencida
                             </span>
                         )}
+
+                        {tarea.descripcion && <p>{tarea.descripcion}</p>}
+
+                        <div className="week-task__actions">
+                            <button
+                                className="week-task__edit"
+                                type="button"
+                                onClick={() => onEditar(tarea)}
+                                title="Editar tarea"
+                            >
+                                <span className="week-task__btn-icon" aria-hidden="true"></span>
+                                <span className="week-task__btn-text">Editar</span>
+                            </button>
+
+                            <button
+                                className="week-task__delete"
+                                type="button"
+                                onClick={() => onEliminar(tarea.id, tarea.titulo)}
+                                title="Eliminar tarea"
+                            >
+                                <span className="week-task__btn-icon" aria-hidden="true"></span>
+                                <span className="week-task__btn-text">Eliminar</span>
+                            </button>
+                        </div>
                     </div>
-                <h3>{tarea.titulo}</h3>
-                {tareaVencida && (
-                    <span className="week-task__overdue-label">
-                        Vencida
-                    </span>
                 )}
-                {tarea.descripcion && <p>{tarea.descripcion}</p>}
-
-                <label className="week-task__check">
-                    <input
-                        type="checkbox"
-                        checked={tarea.estado === "COMPLETADA"}
-                        onChange={() => onCambiarEstado(tarea)}/>
-                    <span>Completada</span>
-                </label>
-
-                <div className="week-task__actions">
-                     <button
-                        className="week-task__edit"
-                        type="button"
-                        onClick={() => onEditar(tarea)}
-                        title="Editar tarea"
-                    >
-                        <span className="week-task__btn-icon" aria-hidden="true"></span>
-                        <span className="week-task__btn-text">Editar</span>
-                    </button>
-
-                    <button
-                        className="week-task__delete"
-                        type="button"
-                        onClick={() => onEliminar(tarea.id, tarea.titulo)}
-                        title="Eliminar tarea"
-                    >
-                        <span className="week-task__btn-icon" aria-hidden="true"></span>
-                        <span className="week-task__btn-text">Eliminar</span>
-                    </button>
-                </div>
             </article>
         )
     }
