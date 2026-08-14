@@ -103,9 +103,6 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
         <section className="estadisticas">
 
             <div className="estadisticas__encabezado">
-                <p className="estadisticas__etiqueta">
-                    PRODUCTIVITY INSIGHTS
-                </p>
 
                 <h2>Resumen de tareas</h2>
 
