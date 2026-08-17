@@ -9,7 +9,7 @@ export interface Tarea {
     prioridad: Prioridad
     categoria: string | null
     estado: Estado
-    fechaCreacion: string
+    fechaCreacion?: number | string;
     fechaLimite: string | null
     fechaCompletada: string | null
     horaCompletada: string | null

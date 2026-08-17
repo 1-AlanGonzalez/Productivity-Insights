@@ -14,7 +14,15 @@ export async function login(correo: string, contrasena: string) {
     })
 
     if (!response.ok) {
-        throw new Error('No fue posible iniciar sesión')
+        const errorText = await response.text().catch(() => "")
+        let mensaje = "No fue posible iniciar sesión"
+        try {
+            const data = JSON.parse(errorText)
+            mensaje = data.message || data.error || mensaje
+        } catch {
+            if (errorText) mensaje = errorText
+        }
+        throw new Error(mensaje)
     }
 
     return
@@ -34,7 +42,18 @@ export async function registrarUsuario(nombre: string, correo: string, contrasen
     })
 
     if (!response.ok) {
-        throw new Error("No fue posible registrar el usuario")
+        // Lee el mensaje real enviado por la BusinessException del backend
+        const errorText = await response.text().catch(() => "")
+        let mensaje = "No fue posible registrar el usuario"
+
+        try {
+            const data = JSON.parse(errorText)
+            mensaje = data.message || data.error || mensaje
+        } catch {
+            if (errorText) mensaje = errorText
+        }
+
+        throw new Error(mensaje)
     }
 
     return
