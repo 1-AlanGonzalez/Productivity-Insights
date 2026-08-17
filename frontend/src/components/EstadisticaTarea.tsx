@@ -1,6 +1,6 @@
 import { ResponsivePie } from "@nivo/pie"
 import { ResponsiveBar } from "@nivo/bar"
-import { ResponsiveLine } from "@nivo/line" // 1. Nuevo import
+import { ResponsiveLine } from "@nivo/line"
 import type { Tarea } from "../types/Tarea"
 import { estaVencida } from "../utils/estadoTarea"
 import {
@@ -16,7 +16,22 @@ interface EstadisticasTareasProps {
 
 function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
 
-    const totalTareas = tareas.length
+    // Fecha actual para comparar con la fecha de creación
+    const fechaActual = new Date()
+    const mesActual = fechaActual.getMonth()
+    const anioActual = fechaActual.getFullYear()
+
+    // Filtra las tareas creadas en el mes actual usando el timestamp (Date.now())
+    const totalTareas = tareas.filter((tarea) => {
+        if (!tarea.fechaCreacion) return false
+
+        const fechaCreacionTarea = new Date(tarea.fechaCreacion)
+
+        return (
+            fechaCreacionTarea.getMonth() === mesActual &&
+            fechaCreacionTarea.getFullYear() === anioActual
+        )
+    }).length
 
     const totalPendientes = tareas.filter(
         (tarea) => tarea.estado === "PENDIENTE"
@@ -56,15 +71,19 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
         },
     ]
 
+    // Agrupación por mes de CREACIÓN en lugar de fecha límite
     const tareasPorMes = tareas.reduce(
         (acumulador, tarea) => {
-            if (!tarea.fechaLimite) {
+            if (!tarea.fechaCreacion) {
                 return acumulador
             }
 
-            const mes = tarea.fechaLimite.substring(0, 7)
+            const fecha = new Date(tarea.fechaCreacion)
+            const anio = fecha.getFullYear()
+            const mesNumero = String(fecha.getMonth() + 1).padStart(2, "0")
+            const clave = `${anio}-${mesNumero}`
 
-            acumulador[mes] = (acumulador[mes] || 0) + 1
+            acumulador[clave] = (acumulador[clave] || 0) + 1
 
             return acumulador
         },
@@ -86,12 +105,11 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
         "12": "Diciembre",
     }
 
-    // 2. Formateo de datos compatible con @nivo/line (estructura de series con 'x' e 'y')
     const datosPorMesLine = [
         {
             id: "Tareas",
-            data: Object.entries(tareasPorMes).map(([mes, cantidad]) => ({
-                x: nombresMeses[mes.substring(5, 7)],
+            data: Object.entries(tareasPorMes).map(([clave, cantidad]) => ({
+                x: nombresMeses[clave.substring(5, 7)],
                 y: cantidad,
             })),
         },
@@ -118,7 +136,7 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
             <div className="estadisticas__resumen">
 
                 <div className="estadisticas__tarjeta">
-                    <span>Total de tareas</span>
+                    <span>Tareas de este mes</span>
                     <strong>{totalTareas}</strong>
                 </div>
 
@@ -139,7 +157,7 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
 
             </div>
 
-            {totalTareas > 0 ? (
+            {tareas.length > 0 ? (
 
                 <div className="estadisticas__graficos">
 
@@ -188,17 +206,15 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
                     <article className="estadisticas__grafico estadisticas__grafico--amplio">
 
                         <div className="estadisticas__grafico-header">
-                            <h3>Tareas por mes</h3>
+                            <h3>Tareas creadas por mes</h3>
                             <p>
-                                Cantidad de tareas según el mes de su fecha
-                                límite.
+                                Cantidad de tareas creadas según cada mes.
                             </p>
                         </div>
 
                         {hayDatosDeMeses ? (
 
                             <div className="estadisticas__grafico-contenido">
-                                {/* 3. Uso del componente ResponsiveLine */}
                                 <ResponsiveLine
                                     data={datosPorMesLine}
                                     {...configuracionGraficoMes}
@@ -209,8 +225,7 @@ function EstadisticaTarea({ tareas }: EstadisticasTareasProps) {
 
                             <div className="estadisticas__sin-datos">
                                 <p>
-                                    No hay tareas con fecha límite para
-                                    mostrar.
+                                    No hay tareas creadas para mostrar.
                                 </p>
                             </div>
 

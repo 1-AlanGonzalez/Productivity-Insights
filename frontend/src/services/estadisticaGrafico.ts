@@ -16,6 +16,16 @@ export const temaGrafico = {
             fill: "#1a1a1a",
         },
     },
+    tooltip: {
+        container: {
+            background: "#181824",
+            color: "#ffffff",
+            fontSize: "12px",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+        },
+    },
 }
 
 export const configuracionGraficoEstado = {
@@ -33,7 +43,7 @@ export const configuracionGraficoEstado = {
     borderWidth: 1,
     borderColor: {
         from: "color" as const,
-        modifiers: [["darker", 0.2] as ["darker", number]], // <- Corregido acá
+        modifiers: [["darker", 0.2] as ["darker", number]],
     },
     arcLinkLabelsSkipAngle: 10,
     arcLinkLabelsTextColor: "#e5e5e5",
@@ -50,6 +60,7 @@ export const configuracionGraficoEstado = {
             symbolShape: "circle" as const,
         },
     ],
+    theme: temaGrafico,
 }
 
 export const configuracionGraficoPrioridad = {
@@ -98,10 +109,10 @@ export const configuracionGraficoMes = {
     pointBorderWidth: 2,
     pointBorderColor: { from: "serieColor" as const },
     pointLabelYOffset: -12,
-    useMesh: true, // Permite interacciones y tooltips suaves al pasar el mouse
-    enableArea: true, // Sombra sutil debajo de la línea
+    useMesh: true,
+    enableArea: true,
     areaOpacity: 0.15,
-    curve: "monotoneX" as const, // Hace que la línea sea curva suave
+    curve: "monotoneX" as const,
     axisBottom: {
         legend: "Mes",
         legendPosition: "middle" as const,
